@@ -7,4 +7,4 @@
 
 ## 2020-12-4
 
-* [Working Group Agenda and Minutes](
+* [Working Group Agenda and Minutes](https://github.com/DARPA-ASKE/ASKE-E-Simulation-WG/blob/main/Meeting_Minutes/Slides/WorkingGroup/2020-12-4%20ASKE-E%20Simulation%20Design%20Working%20Group.pdf)
