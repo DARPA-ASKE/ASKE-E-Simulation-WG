@@ -17,8 +17,8 @@
 
 ### University of Pittsburgh
 
-[aPRAM](https://github.com/paulrcohen/aPRAM)
-[PRAM](https://github.com/momacs/PRAM)
+* [aPRAM](https://github.com/paulrcohen/aPRAM)
+* [PRAM](https://github.com/momacs/PRAM)
 
 ### Joint Group Projects
 
