@@ -15,6 +15,13 @@
 
 ### Jataware
 
-### University of Pittsburgh [https://github.com/paulrcohen/aPRAM](aPRAM)
+### University of Pittsburgh
+
+[aPRAM](https://github.com/paulrcohen/aPRAM)
+[PRAM](https://github.com/momacs/PRAM)
+
+### Joint Group Projects
+
+[LocaleDB](https://github.com/momacs/localedb)
 
 ## Related Links and Repositories from External Sources
