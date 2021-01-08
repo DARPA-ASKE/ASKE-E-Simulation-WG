@@ -22,6 +22,6 @@
 
 ### Joint Group Projects
 
-[LocaleDB](https://github.com/momacs/localedb)
+* [LocaleDB](https://github.com/momacs/localedb)
 
 ## Related Links and Repositories from External Sources
