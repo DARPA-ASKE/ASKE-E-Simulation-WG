@@ -13,6 +13,10 @@
 
 ### Georgia Tech Research Institute
 
+* AlgebraicPetri Julia Library: [https://github.com/AlgebraicJulia/AlgebraicPetri.jl](https://github.com/AlgebraicJulia/AlgebraicPetri.jl)
+* AlgebraicPetri Documentation: [https://algebraicjulia.github.io/AlgebraicPetri.jl/dev/](https://algebraicjulia.github.io/AlgebraicPetri.jl/dev/)
+* Model Stratification Examples: [https://github.com/DARPA-ASKE/ASKE-E-Simulation-WG/tree/gtri_stratification/AlgebraicPetri-Stratification](https://github.com/DARPA-ASKE/ASKE-E-Simulation-WG/tree/gtri_stratification/AlgebraicPetri-Stratification)
+
 ### Jataware
 
 ### University of Pittsburgh
