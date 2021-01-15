@@ -12,6 +12,7 @@ using Catlab.CategoricalAlgebra
 using Catlab.Graphs.BasicGraphs
 using Catlab.WiringDiagrams
 using Catlab.Programs
+using Catlab.Graphics
 using Catlab.Graphics.Graphviz: run_graphviz
 
 import Base.convert
@@ -67,8 +68,7 @@ dem_connection(epi_model::Function, sus_state::Symbol, exp_state::Symbol, inf_st
     inf2 = [append_ind(inf, y) for inf in inf_states]
 
     LabelledPetriNet(vcat(subpart(ep1, :sname), subpart(ep2, :sname)),
-                     vcat([Symbol("crx_$(sus1)_$(inf)")=>((sus1, inf)=>(inf, exp1)) for inf in inf2],
-                          [Symbol("crx_$(sus2)_$(inf)")=>((sus2, inf)=>(inf, exp2)) for inf in inf1])...)
+                          [Symbol("crx_$(sus2)_$(inf)")=>((sus2, inf)=>(inf, exp2)) for inf in inf1]...)
 
 end
 
@@ -78,8 +78,7 @@ diff_connection(epi_model::Function, x::Int, y::Int) = begin
     states1 = subpart(ep1, :sname)
     states2 = subpart(ep2, :sname)
     LabelledPetriNet(vcat(states1, states2),
-                     vcat([Symbol("diff_$(states1[i])_$(states2[i])")=>(states1[i]=>states2[i]) for i in 1:ns(ep1)],
-                          [Symbol("diff_$(states2[i])_$(states1[i])")=>(states2[i]=>states1[i]) for i in 1:ns(ep2)])...)
+                     [Symbol("diff_$(states1[i])_$(states2[i])")=>(states1[i]=>states2[i]) for i in 1:ns(ep1)]...)
 end
 
 add_index(epi_model::LabelledPetriNet, ind::Int) = begin
@@ -166,6 +165,17 @@ save_petri(g, fname::AbstractString, format::AbstractString) =
     open(string(fname, ".", format), "w") do io
         run_graphviz(io, AlgebraicPetri.Graph(g), format=format)
     end
+
+""" Save Graph as an svg image
+"""
+save_graph(g, fname::AbstractString, format::AbstractString) =
+    open(string(fname, ".", format), "w") do io
+        run_graphviz(io, g, format=format)
+    end
+
+""" Show Graph
+"""
+show_graph(g) = to_graphviz(g, node_labels=true)
 
 """ Save serialization to json file
 """

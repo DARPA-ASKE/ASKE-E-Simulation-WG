@@ -14,9 +14,10 @@ AlgebraicPetri.Graph(model)
 
 # DEFINE CONNECTION GRAPH
 # Read in json string
-conn_json = open(f->read(f, String), "connection_graphs/fully_connected_3.json");
+conn_json = open(f->read(f, String), "connection_graphs/chain_3.json");
 # Parse json to object
 conn_graph = ModelStratify.deserialize(conn_json, BasicGraphs.Graph);
+ModelStratify.show_graph(conn_graph)
 
 # PERFORM DEMOGRAPHIC STRATIFICATION
 demographic_model = apex(ModelStratify.dem_strat(model, conn_graph, :S, :E, [:E,:A,:I,:I2]));
