@@ -1,7 +1,7 @@
 module ModelStratify
 
 # The available functions, all have necessary docstrings
-export dem_strat, diff_strat, serialize, deserialize, save_petri, save_json, save_model
+export dem_strat, diff_strat, serialize, serializeToString, deserialize, save_petri, save_json, save_model
 
 using AlgebraicPetri
 
@@ -137,6 +137,7 @@ end
 """ Serialize an ACSet object to a JSON string
 """
 serialize(x::ACSet; io=stdout) = JSON.print(io, x.tables)
+serializeToString(x::ACSet) = x.tables
 
 """ Deserialize a dictionary from a parsed JSON string to an object of the given ACSet type
 """
