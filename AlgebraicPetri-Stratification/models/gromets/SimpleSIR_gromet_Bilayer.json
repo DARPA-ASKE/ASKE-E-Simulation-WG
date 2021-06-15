@@ -1,0 +1,215 @@
+{
+  "syntax": "Gromet",
+  "type": "Bilayer",
+  "name": "SimpleSIR",
+  "metadata": null,
+  "uid": "SimpleSIR_Bilayer",
+  "root": "B:sir",
+  "types": null,
+  "literals": null,
+  "junctions": [
+    {
+      "syntax": "Junction",
+      "type": "State",
+      "name": "S",
+      "metadata": null,
+      "value": null,
+      "value_type": "T:Integer",
+      "uid": "J:S"
+    },
+    {
+      "syntax": "Junction",
+      "type": "State",
+      "name": "I",
+      "metadata": null,
+      "value": null,
+      "value_type": "T:Integer",
+      "uid": "J:I"
+    },
+    {
+      "syntax": "Junction",
+      "type": "State",
+      "name": "R",
+      "metadata": null,
+      "value": null,
+      "value_type": "T:Integer",
+      "uid": "J:R"
+    },
+    {
+      "syntax": "Junction",
+      "type": "Flux",
+      "name": "beta",
+      "metadata": null,
+      "value": {
+        "syntax": "Literal",
+        "type": "T:Real",
+        "name": null,
+        "metadata": null,
+        "uid": null,
+        "value": {
+          "syntax": "Val",
+          "val": "0.1"
+        }
+      },
+      "value_type": "T:Real",
+      "uid": "J:beta"
+    },
+    {
+      "syntax": "Junction",
+      "type": "Flux",
+      "name": "gamma",
+      "metadata": null,
+      "value": {
+        "syntax": "Literal",
+        "type": "T:Real",
+        "name": null,
+        "metadata": null,
+        "uid": null,
+        "value": {
+          "syntax": "Val",
+          "val": "0.2"
+        }
+      },
+      "value_type": "T:Real",
+      "uid": "J:gamma"
+    },
+    {
+      "syntax": "Junction",
+      "type": "Tangent",
+      "name": "S'",
+      "metadata": null,
+      "value": null,
+      "value_type": "T:Integer",
+      "uid": "J:S'"
+    },
+    {
+      "syntax": "Junction",
+      "type": "Tangent",
+      "name": "I'",
+      "metadata": null,
+      "value": null,
+      "value_type": "T:Integer",
+      "uid": "J:I'"
+    },
+    {
+      "syntax": "Junction",
+      "type": "Tangent",
+      "name": "R'",
+      "metadata": null,
+      "value": null,
+      "value_type": "T:Integer",
+      "uid": "J:R'"
+    }
+  ],
+  "ports": null,
+  "wires": [
+    {
+      "syntax": "Wire",
+      "type": "T:W_in",
+      "name": null,
+      "metadata": null,
+      "value": null,
+      "value_type": "T:Integer",
+      "uid": "W:S.beta",
+      "src": "J:S",
+      "tgt": "J:beta"
+    },
+    {
+      "syntax": "Wire",
+      "type": "T:W_in",
+      "name": null,
+      "metadata": null,
+      "value": null,
+      "value_type": "T:Integer",
+      "uid": "W:I.beta",
+      "src": "J:I",
+      "tgt": "J:beta"
+    },
+    {
+      "syntax": "Wire",
+      "type": "T:W_in",
+      "name": null,
+      "metadata": null,
+      "value": null,
+      "value_type": "T:Integer",
+      "uid": "W:I.gamma",
+      "src": "J:I",
+      "tgt": "J:gamma"
+    },
+    {
+      "syntax": "Wire",
+      "type": "T:W_neg",
+      "name": null,
+      "metadata": null,
+      "value": null,
+      "value_type": "T:Real",
+      "uid": "W:beta.S'",
+      "src": "J:beta",
+      "tgt": "J:S'"
+    },
+    {
+      "syntax": "Wire",
+      "type": "T:W_pos",
+      "name": null,
+      "metadata": null,
+      "value": null,
+      "value_type": "T:Real",
+      "uid": "W:beta.I'",
+      "src": "J:beta",
+      "tgt": "J:I'"
+    },
+    {
+      "syntax": "Wire",
+      "type": "T:W_neg",
+      "name": null,
+      "metadata": null,
+      "value": null,
+      "value_type": "T:Real",
+      "uid": "W:gamma.I'",
+      "src": "J:gamma",
+      "tgt": "J:I'"
+    },
+    {
+      "syntax": "Wire",
+      "type": "T:W_pos",
+      "name": null,
+      "metadata": null,
+      "value": null,
+      "value_type": "T:Real",
+      "uid": "W:gamma.R'",
+      "src": "J:gamma",
+      "tgt": "J:R'"
+    }
+  ],
+  "boxes": [
+    {
+      "wires": [
+        "W:S.beta",
+        "W:I.beta",
+        "W:I.gamma",
+        "W:beta.S'",
+        "W:beta.I'",
+        "W:gamma.I'",
+        "W:gamma.R'"
+      ],
+      "boxes": null,
+      "junctions": [
+        "J:S",
+        "J:I",
+        "J:R",
+        "J:beta",
+        "J:gamma",
+        "J:S'",
+        "J:R'",
+        "J:R'"
+      ],
+      "syntax": "Relation",
+      "type": null,
+      "name": "sir",
+      "metadata": null,
+      "uid": "B:sir",
+      "ports": null
+    }
+  ],
+  "variables": null
+}
