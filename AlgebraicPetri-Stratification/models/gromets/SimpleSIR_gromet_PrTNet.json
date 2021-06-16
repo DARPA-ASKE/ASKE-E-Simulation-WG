@@ -1,0 +1,1542 @@
+{
+  "syntax": "Gromet",
+  "type": "PrTNet",
+  "name": "SimpleSIR",
+  "metadata": null,
+  "uid": "SimpleSIR_PrTNet",
+  "root": "B:sir",
+  "types": null,
+  "literals": null,
+  "junctions": [
+    {
+      "syntax": "Junction",
+      "type": "T:State",
+      "name": "S",
+      "metadata": null,
+      "value": null,
+      "value_type": "T:Real",
+      "uid": "J:S"
+    },
+    {
+      "syntax": "Junction",
+      "type": "T:State",
+      "name": "I",
+      "metadata": null,
+      "value": null,
+      "value_type": "T:Real",
+      "uid": "J:I"
+    },
+    {
+      "syntax": "Junction",
+      "type": "T:State",
+      "name": "R",
+      "metadata": null,
+      "value": null,
+      "value_type": "T:Real",
+      "uid": "J:R"
+    }
+  ],
+  "ports": [
+    {
+      "syntax": "Port",
+      "type": "T:Variable",
+      "name": "S",
+      "metadata": null,
+      "value": null,
+      "value_type": "T:Real",
+      "uid": "P:sir.S",
+      "box": "B:sir"
+    },
+    {
+      "syntax": "Port",
+      "type": "T:Variable",
+      "name": "I",
+      "metadata": null,
+      "value": null,
+      "value_type": "T:Real",
+      "uid": "P:sir.I",
+      "box": "B:sir"
+    },
+    {
+      "syntax": "Port",
+      "type": "T:Variable",
+      "name": "R",
+      "metadata": null,
+      "value": null,
+      "value_type": "T:Real",
+      "uid": "P:sir.R",
+      "box": "B:sir"
+    },
+    {
+      "syntax": "Port",
+      "type": "T:Parameter",
+      "name": "beta",
+      "metadata": null,
+      "value": null,
+      "value_type": "T:Real",
+      "uid": "P:sir.beta",
+      "box": "B:sir"
+    },
+    {
+      "syntax": "Port",
+      "type": "T:Parameter",
+      "name": "gamma",
+      "metadata": null,
+      "value": null,
+      "value_type": "T:Real",
+      "uid": "P:sir.gamma",
+      "box": "B:sir"
+    },
+    {
+      "syntax": "Port",
+      "type": "T:Variable",
+      "name": "S",
+      "metadata": null,
+      "value": null,
+      "value_type": "T:Real",
+      "uid": "P:event_inf.S",
+      "box": "B:event_infection"
+    },
+    {
+      "syntax": "Port",
+      "type": "T:Variable",
+      "name": "I",
+      "metadata": null,
+      "value": null,
+      "value_type": "T:Real",
+      "uid": "P:event_inf.I",
+      "box": "B:event_infection"
+    },
+    {
+      "syntax": "Port",
+      "type": "T:Variable",
+      "name": "R",
+      "metadata": null,
+      "value": null,
+      "value_type": "T:Real",
+      "uid": "P:event_inf.R",
+      "box": "B:event_infection"
+    },
+    {
+      "syntax": "Port",
+      "type": "T:Parameter",
+      "name": "beta",
+      "metadata": null,
+      "value": null,
+      "value_type": "T:Real",
+      "uid": "P:event_inf.beta",
+      "box": "B:event_infection"
+    },
+    {
+      "syntax": "Port",
+      "type": "T:Variable",
+      "name": "S",
+      "metadata": null,
+      "value": null,
+      "value_type": "T:Real",
+      "uid": "P:event_inf_enable.S",
+      "box": "B:event_infection_enable"
+    },
+    {
+      "syntax": "Port",
+      "type": "T:Variable",
+      "name": "I",
+      "metadata": null,
+      "value": null,
+      "value_type": "T:Real",
+      "uid": "P:event_inf_enable.I",
+      "box": "B:event_infection_enable"
+    },
+    {
+      "syntax": "Port",
+      "type": "T:Variable",
+      "name": "S",
+      "metadata": null,
+      "value": null,
+      "value_type": "T:Real",
+      "uid": "P:event_inf_enable_S_cond.S",
+      "box": "B:event_inf_enable_S_cond"
+    },
+    {
+      "syntax": "Port",
+      "type": "T:Variable",
+      "name": "S",
+      "metadata": null,
+      "value": null,
+      "value_type": "T:Real",
+      "uid": "P:event_inf_enable_I_cond.I",
+      "box": "B:event_inf_enable_I_cond"
+    },
+    {
+      "syntax": "Port",
+      "type": "T:Variable",
+      "name": "S",
+      "metadata": null,
+      "value": null,
+      "value_type": "T:Real",
+      "uid": "P:event_inf_rate.S",
+      "box": "B:event_infection_rate"
+    },
+    {
+      "syntax": "Port",
+      "type": "T:Variable",
+      "name": "I",
+      "metadata": null,
+      "value": null,
+      "value_type": "T:Real",
+      "uid": "P:event_inf_rate.I",
+      "box": "B:event_infection_rate"
+    },
+    {
+      "syntax": "Port",
+      "type": "T:Variable",
+      "name": "R",
+      "metadata": null,
+      "value": null,
+      "value_type": "T:Real",
+      "uid": "P:event_inf_rate.R",
+      "box": "B:event_infection_rate"
+    },
+    {
+      "syntax": "Port",
+      "type": "T:Parameter",
+      "name": "beta",
+      "metadata": null,
+      "value": null,
+      "value_type": "T:Real",
+      "uid": "P:event_inf_rate.beta",
+      "box": "B:event_infection_rate"
+    },
+    {
+      "syntax": "Port",
+      "type": "T:Variable",
+      "name": "S",
+      "metadata": null,
+      "value": null,
+      "value_type": "T:Real",
+      "uid": "P:event_inf_rate_exp_N.S",
+      "box": "B:event_infection_rate_exp_N"
+    },
+    {
+      "syntax": "Port",
+      "type": "T:Variable",
+      "name": "I",
+      "metadata": null,
+      "value": null,
+      "value_type": "T:Real",
+      "uid": "P:event_inf_rate_exp_N.I",
+      "box": "B:event_infection_rate_exp_N"
+    },
+    {
+      "syntax": "Port",
+      "type": "T:Variable",
+      "name": "R",
+      "metadata": null,
+      "value": null,
+      "value_type": "T:Real",
+      "uid": "P:event_inf_rate_exp_N.R",
+      "box": "B:event_infection_rate_exp_N"
+    },
+    {
+      "syntax": "Port",
+      "type": "T:Output",
+      "name": "N",
+      "metadata": null,
+      "value": null,
+      "value_type": "T:Real",
+      "uid": "P:event_inf_rate_exp_N.N",
+      "box": "B:event_infection_rate_exp_N"
+    },
+    {
+      "syntax": "Port",
+      "type": "T:Variable",
+      "name": "S",
+      "metadata": null,
+      "value": null,
+      "value_type": "T:Real",
+      "uid": "P:event_inf_rate_exp_rate.S",
+      "box": "B:event_infection_rate_exp_rate"
+    },
+    {
+      "syntax": "Port",
+      "type": "T:Variable",
+      "name": "I",
+      "metadata": null,
+      "value": null,
+      "value_type": "T:Real",
+      "uid": "P:event_inf_rate_exp_rate.I",
+      "box": "B:event_infection_rate_exp_rate"
+    },
+    {
+      "syntax": "Port",
+      "type": "T:Variable",
+      "name": "N",
+      "metadata": null,
+      "value": null,
+      "value_type": "T:Real",
+      "uid": "P:event_inf_rate_exp_rate.N",
+      "box": "B:event_infection_rate_exp_rate"
+    },
+    {
+      "syntax": "Port",
+      "type": "T:Parameter",
+      "name": "beta",
+      "metadata": null,
+      "value": null,
+      "value_type": "T:Real",
+      "uid": "P:event_inf_rate_exp_rate.beta",
+      "box": "B:event_infection_rate_exp_rate"
+    },
+    {
+      "syntax": "Port",
+      "type": "T:Variable",
+      "name": "S",
+      "metadata": null,
+      "value": null,
+      "value_type": "T:Real",
+      "uid": "P:event_inf_effect.S",
+      "box": "B:event_infection_effect"
+    },
+    {
+      "syntax": "Port",
+      "type": "T:Variable",
+      "name": "I",
+      "metadata": null,
+      "value": null,
+      "value_type": "T:Real",
+      "uid": "P:event_inf_effect.I",
+      "box": "B:event_infection_effect"
+    },
+    {
+      "syntax": "Port",
+      "type": "T:Variable",
+      "name": "S'",
+      "metadata": null,
+      "value": null,
+      "value_type": "T:Real",
+      "uid": "P:event_inf_effect.S'",
+      "box": "B:event_infection_effect"
+    },
+    {
+      "syntax": "Port",
+      "type": "T:Variable",
+      "name": "I'",
+      "metadata": null,
+      "value": null,
+      "value_type": "T:Real",
+      "uid": "P:event_inf_effect.I'",
+      "box": "B:event_infection_effect"
+    },
+    {
+      "syntax": "Port",
+      "type": "T:Variable",
+      "name": "S",
+      "metadata": null,
+      "value": null,
+      "value_type": "T:Real",
+      "uid": "P:event_inf_effect_expS.S",
+      "box": "B:event_infection_effect_exp_S"
+    },
+    {
+      "syntax": "Port",
+      "type": "T:Variable",
+      "name": "S'",
+      "metadata": null,
+      "value": null,
+      "value_type": "T:Real",
+      "uid": "P:event_inf_effect_expS.S'",
+      "box": "B:event_infection_effect_exp_S"
+    },
+    {
+      "syntax": "Port",
+      "type": "T:Variable",
+      "name": "I",
+      "metadata": null,
+      "value": null,
+      "value_type": "T:Real",
+      "uid": "P:event_inf_effect_expI.I",
+      "box": "B:event_infection_effect_exp_I"
+    },
+    {
+      "syntax": "Port",
+      "type": "T:Variable",
+      "name": "I'",
+      "metadata": null,
+      "value": null,
+      "value_type": "T:Real",
+      "uid": "P:event_inf_effect_expI.I'",
+      "box": "B:event_infection_effect_exp_I"
+    },
+    {
+      "syntax": "Port",
+      "type": "T:Variable",
+      "name": "I",
+      "metadata": null,
+      "value": null,
+      "value_type": "T:Real",
+      "uid": "P:event_rec.I",
+      "box": "B:event_recovered"
+    },
+    {
+      "syntax": "Port",
+      "type": "T:Variable",
+      "name": "R",
+      "metadata": null,
+      "value": null,
+      "value_type": "T:Real",
+      "uid": "P:event_rec.R",
+      "box": "B:event_recovered"
+    },
+    {
+      "syntax": "Port",
+      "type": "T:Parameter",
+      "name": "gamma",
+      "metadata": null,
+      "value": null,
+      "value_type": "T:Real",
+      "uid": "P:event_rec.gamma",
+      "box": "B:event_recovered"
+    },
+    {
+      "syntax": "Port",
+      "type": "T:Variable",
+      "name": "I",
+      "metadata": null,
+      "value": null,
+      "value_type": "T:Real",
+      "uid": "P:event_rec_enable.I",
+      "box": "B:event_recovered_enable"
+    },
+    {
+      "syntax": "Port",
+      "type": "T:Variable",
+      "name": "I",
+      "metadata": null,
+      "value": null,
+      "value_type": "T:Real",
+      "uid": "P:event_rec_enable_I_cond.I",
+      "box": "B:event_rec_enable_I_cond"
+    },
+    {
+      "syntax": "Port",
+      "type": "T:Variable",
+      "name": "I",
+      "metadata": null,
+      "value": null,
+      "value_type": "T:Real",
+      "uid": "P:event_rec_rate.I",
+      "box": "B:event_recovered_rate"
+    },
+    {
+      "syntax": "Port",
+      "type": "T:Parameter",
+      "name": "gamma",
+      "metadata": null,
+      "value": null,
+      "value_type": "T:Real",
+      "uid": "P:event_rec_rate.gamma",
+      "box": "B:event_recovered_rate"
+    },
+    {
+      "syntax": "Port",
+      "type": "T:Variable",
+      "name": "I",
+      "metadata": null,
+      "value": null,
+      "value_type": "T:Real",
+      "uid": "P:event_rec_rate_exp_rate.I",
+      "box": "B:event_recovered_rate_exp_rate"
+    },
+    {
+      "syntax": "Port",
+      "type": "T:Parameter",
+      "name": "gamma",
+      "metadata": null,
+      "value": null,
+      "value_type": "T:Real",
+      "uid": "P:event_rec_rate_exp_rate.gamma",
+      "box": "B:event_recovered_rate_exp_rate"
+    },
+    {
+      "syntax": "Port",
+      "type": "T:Variable",
+      "name": "I",
+      "metadata": null,
+      "value": null,
+      "value_type": "T:Real",
+      "uid": "P:event_rec_effect.I",
+      "box": "B:event_recovered_effect"
+    },
+    {
+      "syntax": "Port",
+      "type": "T:Variable",
+      "name": "R",
+      "metadata": null,
+      "value": null,
+      "value_type": "T:Real",
+      "uid": "P:event_rec_effect.R",
+      "box": "B:event_recovered_effect"
+    },
+    {
+      "syntax": "Port",
+      "type": "T:Variable",
+      "name": "I'",
+      "metadata": null,
+      "value": null,
+      "value_type": "T:Real",
+      "uid": "P:event_rec_effect.I'",
+      "box": "B:event_recovered_effect"
+    },
+    {
+      "syntax": "Port",
+      "type": "T:Variable",
+      "name": "R'",
+      "metadata": null,
+      "value": null,
+      "value_type": "T:Real",
+      "uid": "P:event_rec_effect.R'",
+      "box": "B:event_recovered_effect"
+    },
+    {
+      "syntax": "Port",
+      "type": "T:Variable",
+      "name": "I",
+      "metadata": null,
+      "value": null,
+      "value_type": "T:Real",
+      "uid": "P:event_rec_effect_expI.I",
+      "box": "B:event_recovered_effect_exp_I"
+    },
+    {
+      "syntax": "Port",
+      "type": "T:Variable",
+      "name": "I'",
+      "metadata": null,
+      "value": null,
+      "value_type": "T:Real",
+      "uid": "P:event_rec_effect_expI.I'",
+      "box": "B:event_recovered_effect_exp_I"
+    },
+    {
+      "syntax": "Port",
+      "type": "T:Variable",
+      "name": "R",
+      "metadata": null,
+      "value": null,
+      "value_type": "T:Real",
+      "uid": "P:event_rec_effect_expR.R",
+      "box": "B:event_recovered_effect_exp_R"
+    },
+    {
+      "syntax": "Port",
+      "type": "T:Variable",
+      "name": "R'",
+      "metadata": null,
+      "value": null,
+      "value_type": "T:Real",
+      "uid": "P:event_rec_effect_expR.R'",
+      "box": "B:event_recovered_effect_exp_R"
+    }
+  ],
+  "wires": [
+    {
+      "syntax": "Wire",
+      "type": "T:Undirected",
+      "name": null,
+      "metadata": null,
+      "value": null,
+      "value_type": "T:Real",
+      "uid": "W:sir.S.JS",
+      "src": "P:sir.S",
+      "tgt": "J:S"
+    },
+    {
+      "syntax": "Wire",
+      "type": "T:Undirected",
+      "name": null,
+      "metadata": null,
+      "value": null,
+      "value_type": "T:Real",
+      "uid": "W:sir.I.JI",
+      "src": "P:sir.I",
+      "tgt": "J:I"
+    },
+    {
+      "syntax": "Wire",
+      "type": "T:Undirected",
+      "name": null,
+      "metadata": null,
+      "value": null,
+      "value_type": "T:Real",
+      "uid": "W:sir.R.JR",
+      "src": "P:sir.R",
+      "tgt": "J:R"
+    },
+    {
+      "syntax": "Wire",
+      "type": "T:Undirected",
+      "name": null,
+      "metadata": null,
+      "value": null,
+      "value_type": "T:Real",
+      "uid": "W:sir.beta.inf_beta",
+      "src": "P:sir.beta",
+      "tgt": "P:event_inf.beta"
+    },
+    {
+      "syntax": "Wire",
+      "type": "T:Undirected",
+      "name": null,
+      "metadata": null,
+      "value": null,
+      "value_type": "T:Real",
+      "uid": "W:sir.gamma.rec_gamma",
+      "src": "P:sir.gamma",
+      "tgt": "P:event_rec.gamma"
+    },
+    {
+      "syntax": "Wire",
+      "type": "T:Undirected",
+      "name": null,
+      "metadata": null,
+      "value": null,
+      "value_type": "T:Real",
+      "uid": "W:sir.JS.inf_S",
+      "src": "J:S",
+      "tgt": "P:event_inf.S"
+    },
+    {
+      "syntax": "Wire",
+      "type": "T:Undirected",
+      "name": null,
+      "metadata": null,
+      "value": null,
+      "value_type": "T:Real",
+      "uid": "W:sir.JI.inf_I",
+      "src": "J:I",
+      "tgt": "P:event_inf.I"
+    },
+    {
+      "syntax": "Wire",
+      "type": "T:Undirected",
+      "name": null,
+      "metadata": null,
+      "value": null,
+      "value_type": "T:Real",
+      "uid": "W:sir.JI.rec_I",
+      "src": "J:I",
+      "tgt": "P:event_rec.I"
+    },
+    {
+      "syntax": "Wire",
+      "type": "T:Undirected",
+      "name": null,
+      "metadata": null,
+      "value": null,
+      "value_type": "T:Real",
+      "uid": "W:sir.JR.inf_R",
+      "src": "J:R",
+      "tgt": "P:event_inf.R"
+    },
+    {
+      "syntax": "Wire",
+      "type": "T:Undirected",
+      "name": null,
+      "metadata": null,
+      "value": null,
+      "value_type": "T:Real",
+      "uid": "W:sir.JR.rec_R",
+      "src": "J:R",
+      "tgt": "P:event_rec.R"
+    },
+    {
+      "syntax": "Wire",
+      "type": "T:Undirected",
+      "name": null,
+      "metadata": null,
+      "value": null,
+      "value_type": "T:Real",
+      "uid": "W:event_inf_S.enable_S",
+      "src": "P:event_inf.S",
+      "tgt": "P:event_inf_enable.S"
+    },
+    {
+      "syntax": "Wire",
+      "type": "T:Undirected",
+      "name": null,
+      "metadata": null,
+      "value": null,
+      "value_type": "T:Real",
+      "uid": "W:event_inf_S.rate_S",
+      "src": "P:event_inf.S",
+      "tgt": "P:event_inf_rate.S"
+    },
+    {
+      "syntax": "Wire",
+      "type": "T:Undirected",
+      "name": null,
+      "metadata": null,
+      "value": null,
+      "value_type": "T:Real",
+      "uid": "W:event_inf_S.effect_S",
+      "src": "P:event_inf.S",
+      "tgt": "P:event_inf_effect.S"
+    },
+    {
+      "syntax": "Wire",
+      "type": "T:Undirected",
+      "name": null,
+      "metadata": null,
+      "value": null,
+      "value_type": "T:Real",
+      "uid": "W:event_inf_I.enable_I",
+      "src": "P:event_inf.I",
+      "tgt": "P:event_inf_enable.I"
+    },
+    {
+      "syntax": "Wire",
+      "type": "T:Undirected",
+      "name": null,
+      "metadata": null,
+      "value": null,
+      "value_type": "T:Real",
+      "uid": "W:event_inf_I.rate_I",
+      "src": "P:event_inf.I",
+      "tgt": "P:event_inf_rate.I"
+    },
+    {
+      "syntax": "Wire",
+      "type": "T:Undirected",
+      "name": null,
+      "metadata": null,
+      "value": null,
+      "value_type": "T:Real",
+      "uid": "W:event_inf_I.effect_I",
+      "src": "P:event_inf.I",
+      "tgt": "P:event_inf_effect.I"
+    },
+    {
+      "syntax": "Wire",
+      "type": "T:Undirected",
+      "name": null,
+      "metadata": null,
+      "value": null,
+      "value_type": "T:Real",
+      "uid": "W:event_inf_R.rate_R",
+      "src": "P:event_inf.R",
+      "tgt": "P:event_inf_rate.R"
+    },
+    {
+      "syntax": "Wire",
+      "type": "T:Undirected",
+      "name": null,
+      "metadata": null,
+      "value": null,
+      "value_type": "T:Real",
+      "uid": "W:event_inf_beta.rate_beta",
+      "src": "P:event_inf.beta",
+      "tgt": "P:event_inf_rate.beta"
+    },
+    {
+      "syntax": "Wire",
+      "type": "T:Undirected",
+      "name": null,
+      "metadata": null,
+      "value": null,
+      "value_type": "T:Real",
+      "uid": "W:event_inf_enable_S.cond_S",
+      "src": "P:event_inf_enable.S",
+      "tgt": "P:event_inf_enable_S_cond.S"
+    },
+    {
+      "syntax": "Wire",
+      "type": "T:Undirected",
+      "name": null,
+      "metadata": null,
+      "value": null,
+      "value_type": "T:Real",
+      "uid": "W:event_inf_enable_I.cond_I",
+      "src": "P:event_inf_enable.I",
+      "tgt": "P:event_inf_enable_I_cond.I"
+    },
+    {
+      "syntax": "Wire",
+      "type": "T:Undirected",
+      "name": null,
+      "metadata": null,
+      "value": null,
+      "value_type": "T:Real",
+      "uid": "W:event_inf_rate_S.exp_N_S",
+      "src": "P:event_inf_rate.S",
+      "tgt": "P:event_inf_rate_exp_N.S"
+    },
+    {
+      "syntax": "Wire",
+      "type": "T:Undirected",
+      "name": null,
+      "metadata": null,
+      "value": null,
+      "value_type": "T:Real",
+      "uid": "W:event_inf_rate_I.exp_N_I",
+      "src": "P:event_inf_rate.I",
+      "tgt": "P:event_inf_rate_exp_N.I"
+    },
+    {
+      "syntax": "Wire",
+      "type": "T:Undirected",
+      "name": null,
+      "metadata": null,
+      "value": null,
+      "value_type": "T:Real",
+      "uid": "W:event_inf_rate_R.exp_N_R",
+      "src": "P:event_inf_rate.R",
+      "tgt": "P:event_inf_rate_exp_N.R"
+    },
+    {
+      "syntax": "Wire",
+      "type": "T:Undirected",
+      "name": null,
+      "metadata": null,
+      "value": null,
+      "value_type": "T:Real",
+      "uid": "W:event_inf_rate_S.exp_rate_S",
+      "src": "P:event_inf_rate.S",
+      "tgt": "P:event_inf_rate_exp_rate.S"
+    },
+    {
+      "syntax": "Wire",
+      "type": "T:Undirected",
+      "name": null,
+      "metadata": null,
+      "value": null,
+      "value_type": "T:Real",
+      "uid": "W:event_inf_rate_I.exp_rate_I",
+      "src": "P:event_inf_rate.I",
+      "tgt": "P:event_inf_rate_exp_rate.I"
+    },
+    {
+      "syntax": "Wire",
+      "type": "T:Undirected",
+      "name": null,
+      "metadata": null,
+      "value": null,
+      "value_type": "T:Real",
+      "uid": "W:event_inf_rate_beta.exp_rate_beta",
+      "src": "P:event_inf_rate.beta",
+      "tgt": "P:event_inf_rate_exp_rate.beta"
+    },
+    {
+      "syntax": "Wire",
+      "type": "T:Undirected",
+      "name": null,
+      "metadata": null,
+      "value": null,
+      "value_type": "T:Real",
+      "uid": "W:event_inf_rate_N.exp_rate_N",
+      "src": "P:event_inf_rate_exp_N.N",
+      "tgt": "P:event_inf_rate_exp_rate.N"
+    },
+    {
+      "syntax": "Wire",
+      "type": "T:Undirected",
+      "name": null,
+      "metadata": null,
+      "value": null,
+      "value_type": "T:Real",
+      "uid": "W:event_inf_effect_S.expS_S",
+      "src": "P:event_inf_effect.S",
+      "tgt": "P:event_inf_effect_expS.S"
+    },
+    {
+      "syntax": "Wire",
+      "type": "T:Undirected",
+      "name": null,
+      "metadata": null,
+      "value": null,
+      "value_type": "T:Real",
+      "uid": "W:event_inf_effect_I.expI_I",
+      "src": "P:event_inf_effect.I",
+      "tgt": "P:event_inf_effect_expI.I"
+    },
+    {
+      "syntax": "Wire",
+      "type": "T:Undirected",
+      "name": null,
+      "metadata": null,
+      "value": null,
+      "value_type": "T:Real",
+      "uid": "W:event_inf_effect_S'.expS_S'",
+      "src": "P:event_inf_effect.S'",
+      "tgt": "P:event_inf_effect_expS.S'"
+    },
+    {
+      "syntax": "Wire",
+      "type": "T:Undirected",
+      "name": null,
+      "metadata": null,
+      "value": null,
+      "value_type": "T:Real",
+      "uid": "W:event_inf_effect_I'.expI_I'",
+      "src": "P:event_inf_effect.I'",
+      "tgt": "P:event_inf_effect_expI.I'"
+    },
+    {
+      "syntax": "Wire",
+      "type": "T:Undirected",
+      "name": null,
+      "metadata": null,
+      "value": null,
+      "value_type": "T:Real",
+      "uid": "W:event_rec_I.enable_I",
+      "src": "P:event_rec.I",
+      "tgt": "P:event_rec_enable.I"
+    },
+    {
+      "syntax": "Wire",
+      "type": "T:Undirected",
+      "name": null,
+      "metadata": null,
+      "value": null,
+      "value_type": "T:Real",
+      "uid": "W:event_rec_I.rate_I",
+      "src": "P:event_rec.I",
+      "tgt": "P:event_rec_rate.I"
+    },
+    {
+      "syntax": "Wire",
+      "type": "T:Undirected",
+      "name": null,
+      "metadata": null,
+      "value": null,
+      "value_type": "T:Real",
+      "uid": "W:event_rec_I.effect_I",
+      "src": "P:event_rec.I",
+      "tgt": "P:event_rec_effect.I"
+    },
+    {
+      "syntax": "Wire",
+      "type": "T:Undirected",
+      "name": null,
+      "metadata": null,
+      "value": null,
+      "value_type": "T:Real",
+      "uid": "W:event_rec_R.effect_R",
+      "src": "P:event_rec.R",
+      "tgt": "P:event_rec_effect.R"
+    },
+    {
+      "syntax": "Wire",
+      "type": "T:Undirected",
+      "name": null,
+      "metadata": null,
+      "value": null,
+      "value_type": "T:Real",
+      "uid": "W:event_rec_gamma.rate_gamma",
+      "src": "P:event_rec.gamma",
+      "tgt": "P:event_rec_rate.gamma"
+    },
+    {
+      "syntax": "Wire",
+      "type": "T:Undirected",
+      "name": null,
+      "metadata": null,
+      "value": null,
+      "value_type": "T:Real",
+      "uid": "W:event_rec_enable_I.cond_I",
+      "src": "P:event_rec_enable.I",
+      "tgt": "P:event_rec_enable_I_cond.I"
+    },
+    {
+      "syntax": "Wire",
+      "type": "T:Undirected",
+      "name": null,
+      "metadata": null,
+      "value": null,
+      "value_type": "T:Real",
+      "uid": "W:event_rec_rate_I.exp_rate_I",
+      "src": "P:event_rec_rate.I",
+      "tgt": "P:event_rec_rate_exp_rate.I"
+    },
+    {
+      "syntax": "Wire",
+      "type": "T:Undirected",
+      "name": null,
+      "metadata": null,
+      "value": null,
+      "value_type": "T:Real",
+      "uid": "W:event_rec_rate_gamma.exp_rate_gamma",
+      "src": "P:event_rec_rate.gamma",
+      "tgt": "P:event_rec_rate_exp_rate.gamma"
+    },
+    {
+      "syntax": "Wire",
+      "type": "T:Undirected",
+      "name": null,
+      "metadata": null,
+      "value": null,
+      "value_type": "T:Real",
+      "uid": "W:event_rec_effect_I.expI_I",
+      "src": "P:event_rec_effect.I",
+      "tgt": "P:event_rec_effect_expI.I"
+    },
+    {
+      "syntax": "Wire",
+      "type": "T:Undirected",
+      "name": null,
+      "metadata": null,
+      "value": null,
+      "value_type": "T:Real",
+      "uid": "W:event_inf_effect_R.expR_R",
+      "src": "P:event_rec_effect.R",
+      "tgt": "P:event_rec_effect_expR.R"
+    },
+    {
+      "syntax": "Wire",
+      "type": "T:Undirected",
+      "name": null,
+      "metadata": null,
+      "value": null,
+      "value_type": "T:Real",
+      "uid": "W:event_rec_effect_I'.expI_I'",
+      "src": "P:event_rec_effect.I'",
+      "tgt": "P:event_rec_effect_expI.I'"
+    },
+    {
+      "syntax": "Wire",
+      "type": "T:Undirected",
+      "name": null,
+      "metadata": null,
+      "value": null,
+      "value_type": "T:Real",
+      "uid": "W:event_rec_effect_R'.expR_R'",
+      "src": "P:event_rec_effect.R'",
+      "tgt": "P:event_rec_effect_expR.R'"
+    }
+  ],
+  "boxes": [
+    {
+      "wires": [
+        "W:sir.S.JS",
+        "W:sir.I.JI",
+        "W:sir.R.JR",
+        "W:sir.beta.inf_beta",
+        "W:sir.gamma.rec_gamma",
+        "W:sir.JS.inf_S",
+        "W:sir.JI.inf_I",
+        "W:sir.JI.rec_I",
+        "W:sir.JR.inf_R",
+        "W:sir.JR.rec_R"
+      ],
+      "boxes": [
+        "B:event_infected",
+        "B:event_recovered"
+      ],
+      "junctions": [
+        "J:S",
+        "J:I",
+        "J:R"
+      ],
+      "syntax": "Relation",
+      "type": "PrTNet",
+      "name": "SimpleSIR",
+      "metadata": null,
+      "uid": "B:sir",
+      "ports": [
+        "P:sir.S",
+        "P:sir.I",
+        "P:sir.R",
+        "P:sir.beta",
+        "P:sir.gamma"
+      ]
+    },
+    {
+      "wires": [
+        "W:event_inf_S.enable_S",
+        "W:event_inf_S.rate_S",
+        "W:event_inf_S.effect_S",
+        "W:event_inf_I.enable_I",
+        "W:event_inf_I.rate_I",
+        "W:event_inf_I.effect_I",
+        "W:event_inf_R.rate_R",
+        "W:event_inf_beta.rate_beta"
+      ],
+      "boxes": [
+        "B:event_infection_enable",
+        "B:event_infection_rate",
+        "B:event_infection_effect"
+      ],
+      "junctions": null,
+      "syntax": "Relation",
+      "type": "T:Event",
+      "name": "Event_infection",
+      "metadata": null,
+      "uid": "B:event_infection",
+      "ports": [
+        "P:event_inf.S",
+        "P:event_inf.I",
+        "P:event_inf.R",
+        "P:event_inf.beta"
+      ]
+    },
+    {
+      "wires": [
+        "W:event_inf_enable_S.cond_S",
+        "W:event_inf_enable_I.cond_I"
+      ],
+      "boxes": [
+        "B:event_inf_enable_S_cond",
+        "B:event_inf_enable_I_cond"
+      ],
+      "junctions": null,
+      "syntax": "Relation",
+      "type": "T:Enable",
+      "name": "Event_infection_enable",
+      "metadata": null,
+      "uid": "B:event_infection_enable",
+      "ports": [
+        "P:event_inf_enable.S",
+        "P:event_inf_enable.I"
+      ]
+    },
+    {
+      "wires": [
+        "W:event_inf_rate_S.exp_N_S",
+        "W:event_inf_rate_I.exp_N_I",
+        "W:event_inf_rate_R.exp_N_R",
+        "W:event_inf_rate_S.exp_rate_S",
+        "W:event_inf_rate_I.exp_rate_I",
+        "W:event_inf_rate_beta.exp_rate_beta",
+        "W:event_inf_rate_N.exp_rate_N"
+      ],
+      "boxes": [
+        "B:event_infection_rate_exp_N",
+        "B:event_infection_rate_exp_rate"
+      ],
+      "junctions": null,
+      "syntax": "Relation",
+      "type": "T:Rate",
+      "name": "Event_infection_rate",
+      "metadata": null,
+      "uid": "B:event_infection_rate",
+      "ports": [
+        "P:event_inf_rate.S",
+        "P:event_inf_rate.I",
+        "P:event_inf_rate.R",
+        "P:event_inf_rate.beta"
+      ]
+    },
+    {
+      "wires": [
+        "W:event_inf_effect_S.expS_S",
+        "W:event_inf_effect_I.expI_I",
+        "W:event_inf_effect_S'.expS_S'",
+        "W:event_inf_effect_I'.expI_I'"
+      ],
+      "boxes": [
+        "B:event_infection_effect_exp_S",
+        "B:event_infection_effect_exp_I"
+      ],
+      "junctions": null,
+      "syntax": "Relation",
+      "type": "T:Effect",
+      "name": "Event_infection_effect",
+      "metadata": null,
+      "uid": "B:event_infection_effect",
+      "ports": [
+        "P:event_inf_effect.S",
+        "P:event_inf_effect.I",
+        "P:event_inf_effect.S'",
+        "P:event_inf_effect.I'"
+      ]
+    },
+    {
+      "syntax": "Expression",
+      "type": null,
+      "name": null,
+      "metadata": null,
+      "uid": "B:event_inf_enable_S_cond",
+      "ports": [
+        "P:event_inf_enable_S_cond.S"
+      ],
+      "tree": {
+        "syntax": "Expr",
+        "call": {
+          "syntax": "RefOp",
+          "name": ">"
+        },
+        "args": [
+          "P:event_inf_enable_S_cond.S",
+          {
+            "syntax": "Literal",
+            "type": "T:Real",
+            "name": null,
+            "metadata": null,
+            "uid": null,
+            "value": {
+              "syntax": "Val",
+              "val": "0"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "syntax": "Expression",
+      "type": null,
+      "name": null,
+      "metadata": null,
+      "uid": "B:event_inf_enable_I_cond",
+      "ports": [
+        "P:event_inf_enable_I_cond.I"
+      ],
+      "tree": {
+        "syntax": "Expr",
+        "call": {
+          "syntax": "RefOp",
+          "name": ">"
+        },
+        "args": [
+          "P:event_inf_enable_I_cond.I",
+          {
+            "syntax": "Literal",
+            "type": "T:Real",
+            "name": null,
+            "metadata": null,
+            "uid": null,
+            "value": {
+              "syntax": "Val",
+              "val": "0"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "syntax": "Expression",
+      "type": null,
+      "name": null,
+      "metadata": null,
+      "uid": "B:event_infection_rate_exp_N",
+      "ports": [
+        "P:event_inf_rate_exp_N.S",
+        "P:event_inf_rate_exp_N.I",
+        "P:event_inf_rate_exp_N.R",
+        "P:event_inf_rate_exp_N.N"
+      ],
+      "tree": {
+        "syntax": "Expr",
+        "call": {
+          "syntax": "RefOp",
+          "name": "+"
+        },
+        "args": [
+          "P:event_inf_rate_exp_N.S",
+          "P:event_inf_rate_exp_N.I",
+          "P:event_inf_rate_exp_N.R"
+        ]
+      }
+    },
+    {
+      "syntax": "Expression",
+      "type": null,
+      "name": null,
+      "metadata": null,
+      "uid": "B:event_infection_rate_exp_rate",
+      "ports": [
+        "P:event_inf_rate_exp_rate.S",
+        "P:event_inf_rate_exp_rate.I",
+        "P:event_inf_rate_exp_rate.N",
+        "P:event_inf_rate_exp_rate.beta"
+      ],
+      "tree": {
+        "syntax": "Expr",
+        "call": {
+          "syntax": "RefOp",
+          "name": "/"
+        },
+        "args": [
+          {
+            "syntax": "Expr",
+            "call": {
+              "syntax": "RefOp",
+              "name": "*"
+            },
+            "args": [
+              "P:event_inf_rate_exp_rate.S",
+              "P:event_inf_rate_exp_rate.I",
+              "P:event_inf_rate_exp_rate.beta"
+            ]
+          },
+          "P:event_inf_rate_exp_rate.N"
+        ]
+      }
+    },
+    {
+      "syntax": "Expression",
+      "type": null,
+      "name": null,
+      "metadata": null,
+      "uid": "B:event_infection_effect_exp_S",
+      "ports": [
+        "P:event_inf_effect_expS.S",
+        "P:event_inf_effect_expS.S'"
+      ],
+      "tree": {
+        "syntax": "Expr",
+        "call": {
+          "syntax": "RefOp",
+          "name": "+"
+        },
+        "args": [
+          "P:event_inf_effect_expS.S",
+          {
+            "syntax": "Literal",
+            "type": "T:Integer",
+            "name": null,
+            "metadata": null,
+            "uid": null,
+            "value": {
+              "syntax": "Val",
+              "val": "-1"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "syntax": "Expression",
+      "type": null,
+      "name": null,
+      "metadata": null,
+      "uid": "B:event_infection_effect_exp_I",
+      "ports": [
+        "P:event_inf_effect_expI.I",
+        "P:event_inf_effect_expI.I'"
+      ],
+      "tree": {
+        "syntax": "Expr",
+        "call": {
+          "syntax": "RefOp",
+          "name": "+"
+        },
+        "args": [
+          "P:event_inf_effect_expI.I",
+          {
+            "syntax": "Literal",
+            "type": "T:Integer",
+            "name": null,
+            "metadata": null,
+            "uid": null,
+            "value": {
+              "syntax": "Val",
+              "val": "1"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "wires": [
+        "W:event_rec_I.enable_I",
+        "W:event_rec_I.rate_I",
+        "W:event_rec_I.effect_I",
+        "W:event_rec_R.effect_R",
+        "W:event_rec_gamma.rate_gamma"
+      ],
+      "boxes": [
+        "B:event_recovered_enable",
+        "B:event_recovered_rate",
+        "B:event_recovered_effect"
+      ],
+      "junctions": null,
+      "syntax": "Relation",
+      "type": "T:Event",
+      "name": "Event_recovered",
+      "metadata": null,
+      "uid": "B:event_recovered",
+      "ports": [
+        "P:event_rec.I",
+        "P:event_rec.R",
+        "P:event_rec.gamma"
+      ]
+    },
+    {
+      "wires": [
+        "W:event_rec_enable_I.cond_I"
+      ],
+      "boxes": [
+        "B:event_rec_enable_I_cond"
+      ],
+      "junctions": null,
+      "syntax": "Relation",
+      "type": "T:Enable",
+      "name": "Event_recovered_enable",
+      "metadata": null,
+      "uid": "B:event_recovered_enable",
+      "ports": [
+        "P:event_rec_enable.I"
+      ]
+    },
+    {
+      "wires": [
+        "W:event_rec_rate_I.exp_rate_I",
+        "W:event_rec_rate_gamma.exp_rate_gamma"
+      ],
+      "boxes": [
+        "B:event_recovered_rate_exp_rate"
+      ],
+      "junctions": null,
+      "syntax": "Relation",
+      "type": "T:Rate",
+      "name": "Event_recovered_rate",
+      "metadata": null,
+      "uid": "B:event_recovered_rate",
+      "ports": [
+        "P:event_rec_rate.I",
+        "P:event_rec_rate.gamma"
+      ]
+    },
+    {
+      "wires": [
+        "W:event_inf_effect_I.expI_I",
+        "W:event_inf_effect_R.expR_R",
+        "W:event_inf_effect_I'.expI_I'",
+        "W:event_inf_effect_R'.expR_R'"
+      ],
+      "boxes": [
+        "B:event_recovered_effect_exp_I",
+        "B:event_recovered_effect_exp_R"
+      ],
+      "junctions": null,
+      "syntax": "Relation",
+      "type": "T:Effect",
+      "name": "Event_recovered_effect",
+      "metadata": null,
+      "uid": "B:event_recovered_effect",
+      "ports": [
+        "P:event_rec_effect.I",
+        "P:event_rec_effect.R",
+        "P:event_rec_effect.I'",
+        "P:event_rec_effect.R'"
+      ]
+    },
+    {
+      "syntax": "Expression",
+      "type": null,
+      "name": null,
+      "metadata": null,
+      "uid": "B:event_rec_enable_I_cond",
+      "ports": [
+        "P:event_rec_enable_I_cond.I"
+      ],
+      "tree": {
+        "syntax": "Expr",
+        "call": {
+          "syntax": "RefOp",
+          "name": ">"
+        },
+        "args": [
+          "P:event_inf_enable_I_cond.I",
+          {
+            "syntax": "Literal",
+            "type": "T:Real",
+            "name": null,
+            "metadata": null,
+            "uid": null,
+            "value": {
+              "syntax": "Val",
+              "val": "0"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "syntax": "Expression",
+      "type": null,
+      "name": null,
+      "metadata": null,
+      "uid": "B:event_recovered_rate_exp_rate",
+      "ports": [
+        "P:event_rec_rate_exp_rate.I",
+        "P:event_rec_rate_exp_rate.gamma"
+      ],
+      "tree": {
+        "syntax": "Expr",
+        "call": {
+          "syntax": "RefOp",
+          "name": "*"
+        },
+        "args": [
+          "P:event_rec_rate_exp_rate.I",
+          "P:event_rec_rate_exp_rate.gamma"
+        ]
+      }
+    },
+    {
+      "syntax": "Expression",
+      "type": null,
+      "name": null,
+      "metadata": null,
+      "uid": "B:event_recovered_effect_exp_I",
+      "ports": [
+        "P:event_rec_effect_expI.I",
+        "P:event_rec_effect_expI.I'"
+      ],
+      "tree": {
+        "syntax": "Expr",
+        "call": {
+          "syntax": "RefOp",
+          "name": "+"
+        },
+        "args": [
+          "P:event_rec_effect_expI.I",
+          {
+            "syntax": "Literal",
+            "type": "T:Integer",
+            "name": null,
+            "metadata": null,
+            "uid": null,
+            "value": {
+              "syntax": "Val",
+              "val": "-1"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "syntax": "Expression",
+      "type": null,
+      "name": null,
+      "metadata": null,
+      "uid": "B:event_recovered_effect_exp_R",
+      "ports": [
+        "P:event_rec_effect_expR.R",
+        "P:event_rec_effect_expR.R'"
+      ],
+      "tree": {
+        "syntax": "Expr",
+        "call": {
+          "syntax": "RefOp",
+          "name": "+"
+        },
+        "args": [
+          "P:event_rec_effect_expR.R",
+          {
+            "syntax": "Literal",
+            "type": "T:Integer",
+            "name": null,
+            "metadata": null,
+            "uid": null,
+            "value": {
+              "syntax": "Val",
+              "val": "1"
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "variables": []
+}
