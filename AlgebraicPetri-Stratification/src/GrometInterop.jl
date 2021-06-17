@@ -323,11 +323,17 @@ function petrinet2semagram(pn::AbstractPetriNet, name::String)
   sg
 end
 
-
+""" petrinet2gromet(pn::AbstractPetriNet, name::String)
+  This function takes in any PetriNet and generates a gromet PNC object
+"""
 function petrinet2gromet(pn::AbstractPetriNet, name::String)
   semagram2gromet(petrinet2semagram(pn, name), "PetriNetClassic", name)
 end
 
+""" gromet2petrinet(gromet)
+This function takes in a gromet PNC object (or filename) and generates the
+appropriate flavor of PetriNet.
+"""
 function gromet2petrinet(gromet)
   semagram2petrinet(gromet2semagram(gromet))
 end
@@ -351,6 +357,11 @@ function test()
   end
 end
 
+""" run_sim(pn, concs_d, rates_d, t_range, tsteps)
+This function takes in a LabelledReactionNet, initial concentrations, reaction
+rates, and the relevant time information, simulates, the system, and returns
+a results json file.
+"""
 function run_sim(pn::LabelledReactionNet{R,C},
                  concs_d::Dict{Symbol, C}, rates_d::Dict{Symbol, <:Union{R, Function}},
                  t_range::Tuple{<:Real,<:Real}, tsteps::Array{<:Real,1}) where {R,C}
@@ -386,6 +397,13 @@ function run_sim(gromet::Dict, p::Dict)
   run_sim(gromet2petrinet(gromet), p["parameters"], p["start"], p["stop"], p["step"])
 end
 
+""" run_sim(gfile, param_file)
+This file accepts two json files, the first of which contains a gromet PNC and
+the second of which contains a parameter file. A dictionary with simulation
+results is returned from this function.
+
+TODO: Add options for more advanced time-stepping methods
+"""
 function run_sim(gfile::String, param_file::String)
   run_sim(parsefile(gfile), parsefile(param_file))
 end
