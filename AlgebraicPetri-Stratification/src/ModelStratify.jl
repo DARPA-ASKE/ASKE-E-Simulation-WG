@@ -319,7 +319,7 @@ function dem_strat(epi_model::LabelledReactionNet{R,C}, connection_graph::ScaleG
   stratify(epi_model, (dem_conn, connection_graph); kw...)
 end
 
-function dem_strat(epi_model::LabelledReactionNet, connection_graph::ScaleGraph,
+function dem_strat(epi_model::LabelledReactionNet{R,C}, connection_graph::ScaleGraph,
                    sus_state::Symbol, exp_state::Symbol, inf_states::Array{Symbol}; kw...) where {R,C}
   new_inf_states = [l=>zero(C) for l in inf_states]
   dem_conn = dem_petri(epi_model, sus_state, exp_state, new_inf_states)
