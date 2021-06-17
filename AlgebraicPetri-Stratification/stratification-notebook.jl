@@ -2,7 +2,7 @@ using AlgebraicPetri
 using Catlab.Graphs.BasicGraphs
 using Catlab.CategoricalAlgebra
 
-include("ModelStratify.jl")
+include("src/ModelStratify.jl")
 
 # DEFINE EPI MODEL
 # Read in json string
@@ -20,14 +20,14 @@ conn_graph = ModelStratify.deserialize(conn_json, BasicGraphs.Graph);
 ModelStratify.show_graph(conn_graph)
 
 # PERFORM DEMOGRAPHIC STRATIFICATION
-demographic_model = apex(ModelStratify.dem_strat(model, conn_graph, :S, :E, [:E,:A,:I,:I2]));
+demographic_model = ModelStratify.dem_strat(model, conn_graph, :S, :E, [:E,:A,:I,:I2]);
 # Display graph of model
 AlgebraicPetri.Graph(demographic_model)
 # Save svg and json files of model
 ModelStratify.save_model(demographic_model, "demographic_model");
 
 # PERFORM SPATIAL STRATIFICATION
-spatial_model = apex(ModelStratify.diff_strat(model, conn_graph));
+spatial_model = ModelStratify.diff_strat(model, conn_graph);
 # Display graph of model
 AlgebraicPetri.Graph(spatial_model)
 # Save svg and json files of model
