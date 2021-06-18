@@ -7,7 +7,8 @@ using Genie.Router
 using Genie.Requests
 using Genie.Renderer.Json
  
-include("ModelStratify.jl")
+include("src/ModelStratify.jl")
+include("src/GrometInterop.jl")
 
 function load_model(model_json::Dict)
     model_str = JSON.json(model_json)
@@ -52,12 +53,15 @@ route("/", method = POST) do
     # @show jsonpayload()
 
     payload = jsonpayload()
-    if haskey(payload, "type")
+    if haskey(payload, "strat-type")
         if payload["type"] == "dem"
             Json.json(demographic_stratification(payload["top"], payload["conn"], payload["states"]))
         elseif payload["type"] == "spat"
             Json.json(spatial_stratification(payload["top"], payload["conn"]))
         end
+    elseif haskey(payload, "sim")
+        x = GrometInterop.run_sim(payload["model"], payload["sim"])
+        Json.json(x["result"])
     end
 end
 
