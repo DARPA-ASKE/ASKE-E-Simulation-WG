@@ -357,17 +357,43 @@ function test()
   end
 end
 
-""" run_sim(pn, concs_d, rates_d, t_range, tsteps)
+""" run_sim(pn, conc_params, rate_params, t_range, tsteps)
 This function takes in a LabelledReactionNet, initial concentrations, reaction
 rates, and the relevant time information, simulates, the system, and returns
 a results json file.
 """
 function run_sim(pn::LabelledReactionNet{R,C},
-                 concs_d::Dict{Symbol, C}, rates_d::Dict{Symbol, <:Union{R, Function}},
-                 t_range::Tuple{<:Real,<:Real}, tsteps::Array{<:Real,1}) where {R,C}
+  conc_params::Dict{Symbol, C}, rate_params::Dict{Symbol, <:Union{R, Function}},
+  t_range::Tuple{<:Real,<:Real}, tsteps::Array{<:Real,1}) where {R,C}
   sim = vectorfield(pn)
-  concs = @LArray collect(values(concs_d)) Tuple(keys(concs_d))
-  prob = ODEProblem(sim, concs, t_range, rates_d)
+  
+  #=
+  Intention: 
+  net specifies variable and params don't       -> go with net
+  net specifies variable and params do          -> go with params
+  net doesn't specify variable and params don't -> error
+  net doesn't specify variable and params do    -> go with params 
+  =#
+  concs = Dict{Symbol, C}()
+  for (stateName, stateConc) in pairs(concentrations(pn))
+    try
+      concs[stateName] = conc_params[stateName]
+    catch
+      concs[stateName] = stateConc
+    end
+  end
+  concs_array = @LArray collect(values(concs)) Tuple(keys(concs))
+
+  rate_actuals = Dict() #Dict{Symbol, <:Union{R, Function}}()
+  for (rateName, rate) in pairs(rates(pn))
+    try
+      rate_actuals[rateName] = rate_params[rateName]
+    catch
+      rate_actuals[rateName] = rate
+    end
+  end
+
+  prob = ODEProblem(sim, concs_array, t_range, rate_actuals)
 
   # Add error handling around `sol` function to take advantage of Galois `status` field
 
