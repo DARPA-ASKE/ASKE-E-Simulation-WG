@@ -1,7 +1,7 @@
 {
   "junctions": [
     {
-      "value_type": null,
+      "value_type": "T:Integer",
       "name": "S",
       "uid": "J:S",
       "metadata": null,
@@ -10,7 +10,7 @@
       "syntax": "Junction"
     },
     {
-      "value_type": null,
+      "value_type": "T:Integer",
       "name": "I",
       "uid": "J:I",
       "metadata": null,
@@ -19,7 +19,7 @@
       "syntax": "Junction"
     },
     {
-      "value_type": null,
+      "value_type": "T:Integer",
       "name": "R",
       "uid": "J:R",
       "metadata": null,
@@ -28,7 +28,7 @@
       "syntax": "Junction"
     },
     {
-      "value_type": null,
+      "value_type": "T:Integer",
       "name": "D",
       "uid": "J:D",
       "metadata": null,
@@ -37,7 +37,7 @@
       "syntax": "Junction"
     },
     {
-      "value_type": null,
+      "value_type": "T:Real",
       "name": "inf",
       "uid": "J:inf",
       "metadata": null,
@@ -46,7 +46,7 @@
       "syntax": "Junction"
     },
     {
-      "value_type": null,
+      "value_type": "T:Real",
       "name": "rec",
       "uid": "J:rec",
       "metadata": null,
@@ -55,7 +55,7 @@
       "syntax": "Junction"
     },
     {
-      "value_type": null,
+      "value_type": "T:Real",
       "name": "death",
       "uid": "J:death",
       "metadata": null,
@@ -69,8 +69,8 @@
     {
       "value_type": null,
       "name": null,
-      "uid": "W:S.inf",
-      "src": "J:S",
+      "uid": "W:I.inf",
+      "src": "J:I",
       "tgt": "J:inf",
       "metadata": null,
       "value": null,
@@ -80,8 +80,8 @@
     {
       "value_type": null,
       "name": null,
-      "uid": "W:I.inf",
-      "src": "J:I",
+      "uid": "W:S.inf",
+      "src": "J:S",
       "tgt": "J:inf",
       "metadata": null,
       "value": null,
@@ -179,8 +179,8 @@
       "metadata": null,
       "type": null,
       "wires": [
-        "W:S.inf",
         "W:I.inf",
+        "W:S.inf",
         "W:I.rec",
         "W:I.death",
         "W:inf.I",

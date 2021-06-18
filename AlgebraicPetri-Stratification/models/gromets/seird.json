@@ -1,7 +1,7 @@
 {
   "junctions": [
     {
-      "value_type": null,
+      "value_type": "T:Integer",
       "name": "S",
       "uid": "J:S",
       "metadata": null,
@@ -10,7 +10,7 @@
       "syntax": "Junction"
     },
     {
-      "value_type": null,
+      "value_type": "T:Integer",
       "name": "E",
       "uid": "J:E",
       "metadata": null,
@@ -19,7 +19,7 @@
       "syntax": "Junction"
     },
     {
-      "value_type": null,
+      "value_type": "T:Integer",
       "name": "I",
       "uid": "J:I",
       "metadata": null,
@@ -28,7 +28,7 @@
       "syntax": "Junction"
     },
     {
-      "value_type": null,
+      "value_type": "T:Integer",
       "name": "R",
       "uid": "J:R",
       "metadata": null,
@@ -37,7 +37,7 @@
       "syntax": "Junction"
     },
     {
-      "value_type": null,
+      "value_type": "T:Integer",
       "name": "D",
       "uid": "J:D",
       "metadata": null,
@@ -46,7 +46,7 @@
       "syntax": "Junction"
     },
     {
-      "value_type": null,
+      "value_type": "T:Real",
       "name": "inf",
       "uid": "J:inf",
       "metadata": null,
@@ -55,7 +55,7 @@
       "syntax": "Junction"
     },
     {
-      "value_type": null,
+      "value_type": "T:Real",
       "name": "rec",
       "uid": "J:rec",
       "metadata": null,
@@ -64,18 +64,18 @@
       "syntax": "Junction"
     },
     {
-      "value_type": null,
-      "name": "death",
-      "uid": "J:death",
+      "value_type": "T:Real",
+      "name": "exp",
+      "uid": "J:exp",
       "metadata": null,
       "value": null,
       "type": "Rate",
       "syntax": "Junction"
     },
     {
-      "value_type": null,
-      "name": "exp",
-      "uid": "J:exp",
+      "value_type": "T:Real",
+      "name": "death",
+      "uid": "J:death",
       "metadata": null,
       "value": null,
       "type": "Rate",
@@ -109,17 +109,6 @@
     {
       "value_type": null,
       "name": null,
-      "uid": "W:I.death",
-      "src": "J:I",
-      "tgt": "J:death",
-      "metadata": null,
-      "value": null,
-      "type": null,
-      "syntax": "Wire"
-    },
-    {
-      "value_type": null,
-      "name": null,
       "uid": "W:S.exp",
       "src": "J:S",
       "tgt": "J:exp",
@@ -134,6 +123,17 @@
       "uid": "W:I.exp",
       "src": "J:I",
       "tgt": "J:exp",
+      "metadata": null,
+      "value": null,
+      "type": null,
+      "syntax": "Wire"
+    },
+    {
+      "value_type": null,
+      "name": null,
+      "uid": "W:I.death",
+      "src": "J:I",
+      "tgt": "J:death",
       "metadata": null,
       "value": null,
       "type": null,
@@ -164,17 +164,6 @@
     {
       "value_type": null,
       "name": null,
-      "uid": "W:death.D",
-      "src": "J:death",
-      "tgt": "J:D",
-      "metadata": null,
-      "value": null,
-      "type": null,
-      "syntax": "Wire"
-    },
-    {
-      "value_type": null,
-      "name": null,
       "uid": "W:exp.E",
       "src": "J:exp",
       "tgt": "J:E",
@@ -189,6 +178,17 @@
       "uid": "W:exp.I",
       "src": "J:exp",
       "tgt": "J:I",
+      "metadata": null,
+      "value": null,
+      "type": null,
+      "syntax": "Wire"
+    },
+    {
+      "value_type": null,
+      "name": null,
+      "uid": "W:death.D",
+      "src": "J:death",
+      "tgt": "J:D",
       "metadata": null,
       "value": null,
       "type": null,
@@ -210,8 +210,8 @@
         "J:D",
         "J:inf",
         "J:rec",
-        "J:death",
-        "J:exp"
+        "J:exp",
+        "J:death"
       ],
       "syntax": "Relation",
       "name": "SimpleSEIRD",
@@ -223,14 +223,14 @@
       "wires": [
         "W:E.inf",
         "W:I.rec",
-        "W:I.death",
         "W:S.exp",
         "W:I.exp",
+        "W:I.death",
         "W:inf.I",
         "W:rec.R",
-        "W:death.D",
         "W:exp.E",
-        "W:exp.I"
+        "W:exp.I",
+        "W:death.D"
       ]
     }
   ],

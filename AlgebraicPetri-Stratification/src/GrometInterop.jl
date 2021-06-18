@@ -6,9 +6,11 @@ using JSON
 using Catlab.CategoricalAlgebra
 using Catlab.Theories
 using Catlab.Present
+using LabelledArrays
+using DifferentialEquations
 using AlgebraicPetri
 
-export gromet2petrinet, petrinet2gromet
+export gromet2petrinet, petrinet2gromet, run_sim
 
 @present TheorySemagram(FreeSchema) begin
   (B,P,J,W,C,E,A)::Ob
@@ -36,14 +38,24 @@ const Semagram = ACSetType(TheorySemagram, index=[:srcA, :tgtA,
                                             :srcE, :tgtE,
                                             :port, :junction]){Any}
 
+g2j_types = Dict{String, Type}("T:Integer"  => Int64,
+                               "T:Number"   => Number,
+                               "T:Real"     => Real,
+                               "T:Float"    => Float64,
+                               "T:Boolean"  => Bool,
+                               "T:Nothing"  => Nothing,
+                               "T:Character"=> Char,
+                               "T:Symbol"   => Symbol)
+
+j2g_types = Dict([g2j_types[k]=>k for k in keys(g2j_types)])
+
 function add_uid!(uids, uid, obj::Tuple{Symbol, Int64})
   uid in keys(uids) && error("$uid is not unique in Gromet.")
   uids[uid] = obj
 end
 
-function gromet2semagram(gfile)
+function gromet2semagram(g::Dict)
   s = Semagram()
-  g = parsefile(gfile)
 
   uids = Dict{String, Tuple{Symbol, Int64}}()
   # Import boxes and junctions
@@ -107,24 +119,32 @@ function gromet2semagram(gfile)
   s
 end
 
+function gromet2semagram(gfile::String)
+  g = parsefile(gfile)
+  gromet2semagram(g)
+end
 
 function semagram2petrinet(sg)
   if nparts(sg, :J) != 0
     md = sg[1, :jvalue]
     local pn
     labelled = !all(isnothing.([md["name"] for md in sg[:jvalue]]))
-    valued = !all(isnothing.([md["value"] for md in sg[:jvalue]]))
+    valued = !all(isnothing.([md["value_type"] for md in sg[:jvalue]]))
 
     # Determine which type of Petrinet best fits
-    if labelled
-      if valued
-        pn = LabelledReactionNet{Real, Real}()
+    if valued
+
+      # We assume that all values of States are the same type, and all values of Rate are the same type
+      r_type = g2j_types[sg[first(filter(i->sg[i, :jvalue]["type"] == "Rate", 1:nparts(sg, :J))), :jvalue]["value_type"]]
+      c_type = g2j_types[sg[first(filter(i->sg[i, :jvalue]["type"] == "State", 1:nparts(sg, :J))), :jvalue]["value_type"]]
+      if labelled
+        pn = LabelledReactionNet{r_type, c_type}()
       else
-        pn = LabelledPetriNet()
+        pn = ReactionNet{r_type, c_type}()
       end
     else
-      if valued
-        pn = ReactionNet{Real, Real}()
+      if labelled
+        pn = LabelledPetriNet()
       else
         pn = PetriNet()
       end
@@ -238,9 +258,9 @@ function petrinet2semagram(pn::AbstractPetriNet, name::String)
                  "type"=>"State",
                  "name"=>labelled ? sname(pn, s) : nothing,
                  "metadata"=>nothing,
-                 "value"=>valued ? concentration(pn, s) : nothing,
-                 "value_type"=>valued ? "$(typeof(concentration(pn,s)))" : nothing,
-                 "uid"=>s_uid)
+                 "value"=>nothing, # valued ? concentration(pn, s) : nothing,
+                 "value_type"=>valued ? j2g_types[typeof(concentration(pn,s))] : nothing,
+                 "uid"=>s_uid )
     s2j[s] = add_part!(sg, :J, jvalue=s_val)
   end
 
@@ -250,8 +270,8 @@ function petrinet2semagram(pn::AbstractPetriNet, name::String)
                  "type"=>"Rate",
                  "name"=>labelled ? tname(pn, t) : nothing,
                  "metadata"=>nothing,
-                 "value"=>valued ? rate(pn, t) : nothing,
-                 "value_type"=>valued ? "$(typeof(rate(pn, t)))" : nothing,
+                 "value"=>nothing, #valued ? rate(pn, t) : nothing,
+                 "value_type"=>valued ? j2g_types[typeof(rate(pn, t))] : nothing,
                  "uid"=>t_uid)
     t2j[t] = add_part!(sg, :J, jvalue=t_val)
   end
@@ -303,12 +323,18 @@ function petrinet2semagram(pn::AbstractPetriNet, name::String)
   sg
 end
 
-
+""" petrinet2gromet(pn::AbstractPetriNet, name::String)
+  This function takes in any PetriNet and generates a gromet PNC object
+"""
 function petrinet2gromet(pn::AbstractPetriNet, name::String)
   semagram2gromet(petrinet2semagram(pn, name), "PetriNetClassic", name)
 end
 
-function gromet2petrinet(gromet::String)
+""" gromet2petrinet(gromet)
+This function takes in a gromet PNC object (or filename) and generates the
+appropriate flavor of PetriNet.
+"""
+function gromet2petrinet(gromet)
   semagram2petrinet(gromet2semagram(gromet))
 end
 
@@ -330,4 +356,56 @@ function test()
     gr = petrinet2gromet(pn, "SimpleSIR")
   end
 end
+
+""" run_sim(pn, concs_d, rates_d, t_range, tsteps)
+This function takes in a LabelledReactionNet, initial concentrations, reaction
+rates, and the relevant time information, simulates, the system, and returns
+a results json file.
+"""
+function run_sim(pn::LabelledReactionNet{R,C},
+                 concs_d::Dict{Symbol, C}, rates_d::Dict{Symbol, <:Union{R, Function}},
+                 t_range::Tuple{<:Real,<:Real}, tsteps::Array{<:Real,1}) where {R,C}
+  sim = vectorfield(pn)
+  concs = @LArray collect(values(concs_d)) Tuple(keys(concs_d))
+  prob = ODEProblem(sim, concs, t_range, rates_d)
+
+  # Add error handling around `sol` function to take advantage of Galois `status` field
+
+  sol = solve(prob, Tsit5())
+  res = Dict("times"=>tsteps, "values"=>Dict([s=>[sol(t)[s] for t in tsteps] for s in snames(pn)]))
+  return Dict("result"=>res)
+end
+
+function run_sim(pn::LabelledReactionNet{R,C}, parameters,
+                 start::Number, stop::Number, step::Number) where {R,C}
+  rates = Dict{Symbol, R}()
+  concs = Dict{Symbol, C}()
+
+  for p in keys(parameters)
+    if Symbol(p) ∈ snames(pn)
+      concs[Symbol(p)] = parameters[p]
+    elseif Symbol(p) ∈ tnames(pn)
+      rates[Symbol(p)] = parameters[p]
+    else
+      error("$p not in States or Rates of Petri net")
+    end
+  end
+  run_sim(pn, concs, rates, (start, stop), collect(range(start, stop, step=step)))
+end
+
+function run_sim(gromet::Dict, p::Dict)
+  run_sim(gromet2petrinet(gromet), p["parameters"], p["start"], p["stop"], p["step"])
+end
+
+""" run_sim(gfile, param_file)
+This file accepts two json files, the first of which contains a gromet PNC and
+the second of which contains a parameter file. A dictionary with simulation
+results is returned from this function.
+
+TODO: Add options for more advanced time-stepping methods
+"""
+function run_sim(gfile::String, param_file::String)
+  run_sim(parsefile(gfile), parsefile(param_file))
+end
+
 end
