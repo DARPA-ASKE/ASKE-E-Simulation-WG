@@ -38,14 +38,14 @@ const Semagram = ACSetType(TheorySemagram, index=[:srcA, :tgtA,
                                             :srcE, :tgtE,
                                             :port, :junction]){Any}
 
-g2j_types = Dict{String, Type}("T:Integer"  => Int64,
-                               "T:Number"   => Number,
-                               "T:Real"     => Real,
-                               "T:Float"    => Float64,
-                               "T:Boolean"  => Bool,
-                               "T:Nothing"  => Nothing,
-                               "T:Character"=> Char,
-                               "T:Symbol"   => Symbol)
+g2j_types = Dict{String, Type}("Integer"  => Int64,
+                               "Number"   => Number,
+                               "Real"     => Real,
+                               "Float"    => Float64,
+                               "Boolean"  => Bool,
+                               "Nothing"  => Nothing,
+                               "Character"=> Char,
+                               "Symbol"   => Symbol)
 
 j2g_types = Dict([g2j_types[k]=>k for k in keys(g2j_types)])
 

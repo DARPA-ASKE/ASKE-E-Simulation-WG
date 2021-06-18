@@ -14,7 +14,7 @@
       "name": "S",
       "metadata": null,
       "value": null,
-      "value_type": "T:Integer",
+      "value_type": "Integer",
       "uid": "J:S"
     },
     {
@@ -23,7 +23,7 @@
       "name": "I",
       "metadata": null,
       "value": null,
-      "value_type": "T:Integer",
+      "value_type": "Integer",
       "uid": "J:I"
     },
     {
@@ -32,7 +32,7 @@
       "name": "R",
       "metadata": null,
       "value": null,
-      "value_type": "T:Integer",
+      "value_type": "Integer",
       "uid": "J:R"
     },
     {
@@ -42,7 +42,7 @@
       "metadata": null,
       "value": {
         "syntax": "Literal",
-        "type": "T:Real",
+        "type": "Real",
         "name": null,
         "metadata": null,
         "uid": null,
@@ -51,7 +51,7 @@
           "val": "0.1"
         }
       },
-      "value_type": "T:Real",
+      "value_type": "Real",
       "uid": "J:beta"
     },
     {
@@ -61,7 +61,7 @@
       "metadata": null,
       "value": {
         "syntax": "Literal",
-        "type": "T:Real",
+        "type": "Real",
         "name": null,
         "metadata": null,
         "uid": null,
@@ -70,7 +70,7 @@
           "val": "0.2"
         }
       },
-      "value_type": "T:Real",
+      "value_type": "Real",
       "uid": "J:gamma"
     },
     {
@@ -79,7 +79,7 @@
       "name": "S'",
       "metadata": null,
       "value": null,
-      "value_type": "T:Integer",
+      "value_type": "Integer",
       "uid": "J:S'"
     },
     {
@@ -88,7 +88,7 @@
       "name": "I'",
       "metadata": null,
       "value": null,
-      "value_type": "T:Integer",
+      "value_type": "Integer",
       "uid": "J:I'"
     },
     {
@@ -97,7 +97,7 @@
       "name": "R'",
       "metadata": null,
       "value": null,
-      "value_type": "T:Integer",
+      "value_type": "Integer",
       "uid": "J:R'"
     }
   ],
@@ -105,77 +105,77 @@
   "wires": [
     {
       "syntax": "Wire",
-      "type": "T:W_in",
+      "type": "W_in",
       "name": null,
       "metadata": null,
       "value": null,
-      "value_type": "T:Integer",
+      "value_type": "Integer",
       "uid": "W:S.beta",
       "src": "J:S",
       "tgt": "J:beta"
     },
     {
       "syntax": "Wire",
-      "type": "T:W_in",
+      "type": "W_in",
       "name": null,
       "metadata": null,
       "value": null,
-      "value_type": "T:Integer",
+      "value_type": "Integer",
       "uid": "W:I.beta",
       "src": "J:I",
       "tgt": "J:beta"
     },
     {
       "syntax": "Wire",
-      "type": "T:W_in",
+      "type": "W_in",
       "name": null,
       "metadata": null,
       "value": null,
-      "value_type": "T:Integer",
+      "value_type": "Integer",
       "uid": "W:I.gamma",
       "src": "J:I",
       "tgt": "J:gamma"
     },
     {
       "syntax": "Wire",
-      "type": "T:W_neg",
+      "type": "W_neg",
       "name": null,
       "metadata": null,
       "value": null,
-      "value_type": "T:Real",
+      "value_type": "Real",
       "uid": "W:beta.S'",
       "src": "J:beta",
       "tgt": "J:S'"
     },
     {
       "syntax": "Wire",
-      "type": "T:W_pos",
+      "type": "W_pos",
       "name": null,
       "metadata": null,
       "value": null,
-      "value_type": "T:Real",
+      "value_type": "Real",
       "uid": "W:beta.I'",
       "src": "J:beta",
       "tgt": "J:I'"
     },
     {
       "syntax": "Wire",
-      "type": "T:W_neg",
+      "type": "W_neg",
       "name": null,
       "metadata": null,
       "value": null,
-      "value_type": "T:Real",
+      "value_type": "Real",
       "uid": "W:gamma.I'",
       "src": "J:gamma",
       "tgt": "J:I'"
     },
     {
       "syntax": "Wire",
-      "type": "T:W_pos",
+      "type": "W_pos",
       "name": null,
       "metadata": null,
       "value": null,
-      "value_type": "T:Real",
+      "value_type": "Real",
       "uid": "W:gamma.R'",
       "src": "J:gamma",
       "tgt": "J:R'"

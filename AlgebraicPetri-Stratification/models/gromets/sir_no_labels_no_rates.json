@@ -14,7 +14,7 @@
       "name": null,
       "metadata": null,
       "value": null,
-      "value_type": "T:Integer",
+      "value_type": "Integer",
       "uid": "J:S"
     },
     {
@@ -23,7 +23,7 @@
       "name": null,
       "metadata": null,
       "value": null,
-      "value_type": "T:Integer",
+      "value_type": "Integer",
       "uid": "J:I"
     },
     {
@@ -32,7 +32,7 @@
       "name": null,
       "metadata": null,
       "value": null,
-      "value_type": "T:Integer",
+      "value_type": "Integer",
       "uid": "J:R"
     },
     {
@@ -41,7 +41,7 @@
       "name": null,
       "metadata": null,
       "value": null,
-      "value_type": "T:Real",
+      "value_type": "Real",
       "uid": "J:beta"
     },
     {
@@ -50,7 +50,7 @@
       "name": null,
       "metadata": null,
       "value": null,
-      "value_type": "T:Real",
+      "value_type": "Real",
       "uid": "J:gamma"
     }
   ],
