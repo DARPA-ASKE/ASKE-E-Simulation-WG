@@ -79,7 +79,7 @@ end
 function connection(conn_petri::LabelledPetriNet, m1::LabelledPetriNet, m2::LabelledPetriNet, ind1, ind2)
   new_conn = copy(conn_petri)
   set_subpart!(new_conn, :sname, vcat(subpart(m1, :sname), subpart(m2, :sname)))
-  set_subpart!(new_conn, :tname, [Symbol("$(name)_$(ind1)→$(ind2)") for name in subpart(conn_petri, :tname)])
+  set_subpart!(new_conn, :tname, [Symbol("$(name)_$(ind1)_$(ind2)") for name in subpart(conn_petri, :tname)])
   Open(new_conn, subpart(m1, :sname)[1:ns(m1)], subpart(m2, :sname)[1:ns(m2)])
 end
 
@@ -88,7 +88,7 @@ function connection(conn_petri::LabelledReactionNet, m1::LabelledReactionNet,
   new_conn = copy(conn_petri)
   set_subpart!(new_conn, :sname, vcat(subpart(m1, :sname), subpart(m2, :sname)))
   set_subpart!(new_conn, :concentration, vcat(subpart(m1, :concentration), subpart(m2, :concentration)))
-  set_subpart!(new_conn, :tname, [Symbol("$(name)_$(ind1)→$(ind2)") for name in subpart(conn_petri, :tname)])
+  set_subpart!(new_conn, :tname, [Symbol("$(name)_$(ind1)_$(ind2)") for name in subpart(conn_petri, :tname)])
   set_subpart!(new_conn, :rate, subpart(conn_petri,:rate)*rate_fact)
   Open(new_conn, subpart(m1, :sname)[1:ns(m1)], subpart(m2, :sname)[1:ns(m2)])
 end
@@ -329,6 +329,8 @@ end
 """ Serialize an ACSet object to a JSON string
 """
 serialize(x::ACSet; io=stdout) = JSON.print(io, x.tables, 2)
+
+serialize_string(x::ACSet) = JSON.json(x.tables, 2)
 
 """ Deserialize a dictionary from a parsed JSON string to an object of the given ACSet type
 """

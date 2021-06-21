@@ -36,8 +36,8 @@ function demographic_stratification(topology::Dict, connections::Dict, states::D
     connections = load_connection_graph(connections)
     sus, exp, inf = load_states(states)
 
-    demographic_model = apex(ModelStratify.dem_strat(model, connections, sus, exp, inf));
-    return ModelStratify.serializeToString(demographic_model);
+    demographic_model = ModelStratify.dem_strat(model, connections, sus, exp, inf)
+    return ModelStratify.serialize_string(demographic_model);
 end
 
 function spatial_stratification(topology::Dict, connections::Dict)
@@ -45,8 +45,8 @@ function spatial_stratification(topology::Dict, connections::Dict)
     model = load_model(topology)
     connections = load_connection_graph(connections)
 
-    spatial_model = apex(ModelStratify.diff_strat(model, connections));
-    return ModelStratify.serializeToString(spatial_model);
+    spatial_model = ModelStratify.diff_strat(model, connections)
+    return ModelStratify.serialize_string(spatial_model);
 end
 
 route("/", method = POST) do 
@@ -54,10 +54,10 @@ route("/", method = POST) do
 
     payload = jsonpayload()
     if haskey(payload, "strat-type")
-        if payload["type"] == "dem"
-            Json.json(demographic_stratification(payload["top"], payload["conn"], payload["states"]))
-        elseif payload["type"] == "spat"
-            Json.json(spatial_stratification(payload["top"], payload["conn"]))
+        if payload["strat-type"] == "dem"
+            demographic_stratification(payload["top"], payload["conn"], payload["states"])
+        elseif payload["strat-type"] == "spat"
+            spatial_stratification(payload["top"], payload["conn"])
         end
     elseif haskey(payload, "sim")
         x = GrometInterop.run_sim(payload["model"], payload["sim"])
