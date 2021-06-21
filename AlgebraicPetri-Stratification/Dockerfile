@@ -3,6 +3,8 @@ FROM julia:1.5
 RUN apt-get update && apt-get install -y \
  	gcc
 
+WORKDIR /build
+
 COPY setup.jl .
 COPY Project.toml .
 RUN julia --project setup.jl
