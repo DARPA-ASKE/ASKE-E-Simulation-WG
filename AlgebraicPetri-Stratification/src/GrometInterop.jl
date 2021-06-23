@@ -161,7 +161,7 @@ function semagram2petrinet(sg)
           pn[j_ind, :sname] = Symbol(j["name"])
         end
         if valued
-          pn[j_ind, :concentration] = isnothing(j["value"]) ? 0.0 : parse(Float64, j["value"]["value"]["val"])
+          pn[j_ind, :concentration] = isnothing(j["value"]) ? 0.0 : parse(c_type, j["value"]["value"]["val"])
         end
       elseif j["type"] == "Rate"
         j_ind = add_part!(pn, :T)
@@ -170,7 +170,7 @@ function semagram2petrinet(sg)
           pn[j_ind, :tname] = Symbol(j["name"])
         end
         if valued
-          pn[j_ind, :rate] = isnothing(j["value"]) ? 0.0 : parse(Float64, j["value"]["value"]["val"])
+          pn[j_ind, :rate] = isnothing(j["value"]) ? 0.0 : parse(r_type, j["value"]["value"]["val"])
         end
       else
         error("$(j["type"]) is an invalid type for PetriNet junctions")
