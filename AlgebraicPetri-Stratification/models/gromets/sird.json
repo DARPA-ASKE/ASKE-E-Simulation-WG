@@ -1,7 +1,7 @@
 {
   "junctions": [
     {
-      "value_type": "T:Integer",
+      "value_type": "Integer",
       "name": "S",
       "uid": "J:S",
       "metadata": null,
@@ -10,7 +10,7 @@
       "syntax": "Junction"
     },
     {
-      "value_type": "T:Integer",
+      "value_type": "Integer",
       "name": "I",
       "uid": "J:I",
       "metadata": null,
@@ -19,7 +19,7 @@
       "syntax": "Junction"
     },
     {
-      "value_type": "T:Integer",
+      "value_type": "Integer",
       "name": "R",
       "uid": "J:R",
       "metadata": null,
@@ -28,7 +28,7 @@
       "syntax": "Junction"
     },
     {
-      "value_type": "T:Integer",
+      "value_type": "Integer",
       "name": "D",
       "uid": "J:D",
       "metadata": null,
@@ -37,7 +37,7 @@
       "syntax": "Junction"
     },
     {
-      "value_type": "T:Real",
+      "value_type": "Real",
       "name": "inf",
       "uid": "J:inf",
       "metadata": null,
@@ -46,7 +46,7 @@
       "syntax": "Junction"
     },
     {
-      "value_type": "T:Real",
+      "value_type": "Real",
       "name": "rec",
       "uid": "J:rec",
       "metadata": null,
@@ -55,7 +55,7 @@
       "syntax": "Junction"
     },
     {
-      "value_type": "T:Real",
+      "value_type": "Real",
       "name": "death",
       "uid": "J:death",
       "metadata": null,
