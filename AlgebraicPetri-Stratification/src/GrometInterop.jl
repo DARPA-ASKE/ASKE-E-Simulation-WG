@@ -9,6 +9,11 @@ using Catlab.Present
 using LabelledArrays
 using DifferentialEquations
 using AlgebraicPetri
+import Base.parse
+
+# Parse wrapper for Real and Number
+parse(::Type{Real}, s::String) = parse(Float64, s)
+parse(::Type{Number}, s::String) = parse(Float64, s)
 
 export gromet2petrinet, petrinet2gromet, run_sim
 
@@ -158,7 +163,9 @@ function semagram2petrinet(sg)
         j_ind = add_part!(pn, :S)
         sg2pn[i] = :S=>j_ind
         if labelled
-          pn[j_ind, :sname] = Symbol(j["name"])
+          # Added for parameterization using Gromet UIDS
+          # TODO: Develop method for storing UID maps
+          pn[j_ind, :sname] = Symbol(j["uid"])
         end
         if valued
           pn[j_ind, :concentration] = isnothing(j["value"]) ? 0.0 : parse(c_type, j["value"]["value"]["val"])
@@ -167,7 +174,9 @@ function semagram2petrinet(sg)
         j_ind = add_part!(pn, :T)
         sg2pn[i] = :T=>j_ind
         if labelled
-          pn[j_ind, :tname] = Symbol(j["name"])
+          # Added for parameterization using Gromet UIDS
+          # TODO: Develop method for storing UID maps
+          pn[j_ind, :tname] = Symbol(j["uid"])
         end
         if valued
           pn[j_ind, :rate] = isnothing(j["value"]) ? 0.0 : parse(r_type, j["value"]["value"]["val"])
@@ -243,6 +252,9 @@ function make_uid!(uids::Set{String}, val::String)
   end
 end
 
+# TODO: Fix UID mapping between Gromet UIDS and PetriNets
+rem_tag(s) = replace("$s", r"J:"=>"")
+
 function petrinet2semagram(pn::AbstractPetriNet, name::String)
   sg = Semagram()
   s2j = zeros(Int64, ns(pn))
@@ -253,10 +265,11 @@ function petrinet2semagram(pn::AbstractPetriNet, name::String)
 
   uids = Set{String}()
   for s in 1:ns(pn)
-    s_uid = make_uid!(uids, "J:$(sname(pn, s))")
+    # TODO: Fix UID mapping between Gromet UIDs and PetriNets
+    s_uid = make_uid!(uids, "J:$(rem_tag(sname(pn, s)))")
     s_val = Dict("syntax"=>"Junction",
                  "type"=>"State",
-                 "name"=>labelled ? sname(pn, s) : nothing,
+                 "name"=>labelled ? rem_tag(sname(pn, s)) : nothing,
                  "metadata"=>nothing,
                  "value"=>nothing, # valued ? concentration(pn, s) : nothing,
                  "value_type"=>valued ? j2g_types[typeof(concentration(pn,s))] : nothing,
@@ -265,10 +278,10 @@ function petrinet2semagram(pn::AbstractPetriNet, name::String)
   end
 
   for t in 1:nt(pn)
-    t_uid = make_uid!(uids, "J:$(tname(pn, t))")
+    t_uid = make_uid!(uids, "J:$(rem_tag(tname(pn, t)))")
     t_val = Dict("syntax"=>"Junction",
                  "type"=>"Rate",
-                 "name"=>labelled ? tname(pn, t) : nothing,
+                 "name"=>labelled ? rem_tag(tname(pn, t)) : nothing,
                  "metadata"=>nothing,
                  "value"=>nothing, #valued ? rate(pn, t) : nothing,
                  "value_type"=>valued ? j2g_types[typeof(rate(pn, t))] : nothing,
@@ -277,7 +290,7 @@ function petrinet2semagram(pn::AbstractPetriNet, name::String)
   end
 
   for i in 1:ni(pn)
-    w_uid = make_uid!(uids, "W:$(sname(pn, pn[i,:is])).$(tname(pn, pn[i, :it]))")
+    w_uid = make_uid!(uids, rem_tag("W:$(sname(pn, pn[i,:is])).$(tname(pn, pn[i, :it]))"))
     w_src = sg[s2j[pn[i,:is]], :jvalue]["uid"]
     w_tgt = sg[t2j[pn[i,:it]], :jvalue]["uid"]
     w_val = Dict("syntax"=>"Wire",
@@ -293,7 +306,7 @@ function petrinet2semagram(pn::AbstractPetriNet, name::String)
   end
 
   for o in 1:no(pn)
-    w_uid = make_uid!(uids, "W:$(tname(pn, pn[o,:ot])).$(sname(pn, pn[o, :os]))")
+    w_uid = make_uid!(uids, rem_tag("W:$(tname(pn, pn[o,:ot])).$(sname(pn, pn[o, :os]))"))
     w_src = sg[t2j[pn[o,:ot]], :jvalue]["uid"]
     w_tgt = sg[s2j[pn[o,:os]], :jvalue]["uid"]
     w_val = Dict("syntax"=>"Wire",
