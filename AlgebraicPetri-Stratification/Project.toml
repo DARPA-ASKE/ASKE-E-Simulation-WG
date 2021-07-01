@@ -8,4 +8,4 @@ LabelledArrays = "2ee39098-c373-598a-b85f-a56591580800"
 PackageCompiler = "9b87118b-4619-50d2-8e1e-99f35a4d4d9d"
 
 [compat]
-AlgebraicPetri = "^0.6.3"
+AlgebraicPetri = "0.6.3 - 0.7"
