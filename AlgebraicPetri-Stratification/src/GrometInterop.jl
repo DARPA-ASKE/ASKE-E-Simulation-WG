@@ -9,13 +9,14 @@ using Catlab.Present
 using LabelledArrays
 using DifferentialEquations
 using AlgebraicPetri
+using AlgebraicPetri.BilayerNetworks
 import Base.parse
 
 # Parse wrapper for Real and Number
 parse(::Type{Real}, s::String) = parse(Float64, s)
 parse(::Type{Number}, s::String) = parse(Float64, s)
 
-export gromet2petrinet, petrinet2gromet, run_sim
+export gromet2petrinet, petrinet2gromet, run_sim, bln2pnc
 
 @present TheorySemagram(FreeSchema) begin
   (B,P,J,W,C,E,A)::Ob
@@ -351,6 +352,80 @@ function gromet2petrinet(gromet)
   semagram2petrinet(gromet2semagram(gromet))
 end
 
+##################
+# BLN Conversion #
+##################
+
+function semagram2bln(sg)
+  if nparts(sg, :J) != 0
+    local bn
+    labelled = !all(isnothing.([md["name"] for md in sg[:jvalue]]))
+
+    # Determine which type of BilayerNetwork best fits
+
+    if labelled
+      bn = LabelledBilayerNetwork()
+    else
+      bn = BilayerNetwork()
+    end
+
+    sg2bn = Array{Pair{Symbol, Int64}, 1}(undef, nparts(sg, :J))
+    # Import junction data
+    for i in 1:nparts(sg, :J)
+      j = sg[i, :jvalue]
+      if j["type"] == "State"
+        j_ind = add_part!(bn, :Qin)
+        sg2bn[i] = :Qin=>j_ind
+        if labelled
+          bn[j_ind, :variable] = Symbol(j["name"])
+        end
+      elseif j["type"] == "Flux"
+        j_ind = add_part!(bn, :Box)
+        sg2bn[i] = :Box=>j_ind
+        if labelled
+          bn[j_ind, :parameter] = Symbol(j["name"])
+        end
+      elseif j["type"] == "Tangent"
+        j_ind = add_part!(bn, :Qout)
+        sg2bn[i] = :Qout=>j_ind
+        if labelled
+          bn[j_ind, :tanvar] = Symbol(j["name"])
+        end
+      else
+        error("$(j["type"]) is an invalid type for Bilayer network junctions")
+      end
+    end
+    # Import wire data
+    for e in 1:nparts(sg, :E)
+      src = sg2bn[sg[e, :srcE]]
+      tgt = sg2bn[sg[e, :tgtE]]
+      type = sg[e, :evalue]["type"]
+      if type == "W_in"
+        add_part!(bn, :Win, arg=src[2], call=tgt[2])
+      elseif type == "W_neg"
+        add_part!(bn, :Wn, efflux=src[2], effusion=tgt[2])
+      elseif type == "W_pos"
+        add_part!(bn, :Wa, influx=src[2], infusion=tgt[2])
+      end
+    end
+    bn
+  else
+    BilayerNetwork()
+  end
+
+end
+
+function gromet2bln(model::String)
+  semagram2bln(GrometInterop.gromet2semagram(model))
+end
+
+function bln2pnc(bln::String, name::String)
+  model = GrometInterop.gromet2bln(bln)
+  lpn = LabelledPetriNet()
+  migrate!(lpn, model)
+  petrinet2gromet(lpn, name)
+end
+
 function test()
   println("Loading Classic")
   gromet2semagram("SimpleSIR_gromet_PetriNetClassic.json")
@@ -379,13 +454,13 @@ function run_sim(pn::LabelledReactionNet{R,C},
   conc_params::Dict{Symbol, C}, rate_params::Dict{Symbol, <:Union{R, Function}},
   t_range::Tuple{<:Real,<:Real}, tsteps::Array{<:Real,1}) where {R,C}
   sim = vectorfield(pn)
-  
+
   #=
-  Intention: 
+  Intention:
   net specifies variable and params don't       -> go with net
   net specifies variable and params do          -> go with params
   net doesn't specify variable and params don't -> error
-  net doesn't specify variable and params do    -> go with params 
+  net doesn't specify variable and params do    -> go with params
   =#
   concs = Dict{Symbol, C}()
   for (stateName, stateConc) in pairs(concentrations(pn))
