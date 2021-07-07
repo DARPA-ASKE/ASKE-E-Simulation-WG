@@ -20,7 +20,10 @@ conn_graph = ModelStratify.deserialize(conn_json, ModelStratify.ScaleGraph{Numbe
 ModelStratify.show_graph(conn_graph)
 
 # PERFORM DEMOGRAPHIC STRATIFICATION
-demographic_model = ModelStratify.dem_strat(model, conn_graph, :S, :E, [:E,:I]);
+demographic_model = ModelStratify.dem_strat(model, conn_graph,
+                                            Symbol("J:S"),
+                                            Symbol("J:E"), [ Symbol("J:E"),
+                                                             Symbol("J:I")]);
 # Display graph of model
 AlgebraicPetri.Graph(demographic_model)
 # Save svg and json files of model
@@ -29,7 +32,10 @@ open("demographic_gromet.json", "w") do f
 end
 
 # PERFORM SPATIAL STRATIFICATION
-spatial_model = ModelStratify.diff_strat(model, conn_graph);
+spatial_model = ModelStratify.diff_strat(model, conn_graph, [Symbol("J:S"),
+                                                             Symbol("J:E"),
+                                                             Symbol("J:I"),
+                                                             Symbol("J:R")]);
 # Display graph of model
 AlgebraicPetri.Graph(spatial_model)
 # Save svg and json files of model
