@@ -10,6 +10,7 @@ using LabelledArrays
 using DifferentialEquations
 using AlgebraicPetri
 using AlgebraicPetri.BilayerNetworks
+using Dates: now, UTC
 import Base.parse
 
 # Parse wrapper for Real and Number
@@ -340,8 +341,20 @@ end
 """ petrinet2gromet(pn::AbstractPetriNet, name::String)
   This function takes in any PetriNet and generates a gromet PNC object
 """
-function petrinet2gromet(pn::AbstractPetriNet, name::String)
-  semagram2gromet(petrinet2semagram(pn, name), "PetriNetClassic", name)
+function petrinet2gromet(pn::AbstractPetriNet, name::String; metadata=false)
+  g = semagram2gromet(petrinet2semagram(pn, name), "PetriNetClassic", name)
+  if metadata
+    g["metadata"] = Dict("metadata_type"=>"ModelInterface",
+                         "uid"=>"$(name)_PNC_model_interface",
+                         "provenance"=>
+                           Dict("metadata_type"=>"Provenance",
+                                "method"=>"FromPNC_baas@gt",
+                                "timestamp"=>now(UTC)),
+                           "variables"=>["J:$(rem_tag(s))" for s in vcat(snames(pn), tnames(pn))],
+                           "initial_conditions"=>["J:$(rem_tag(s))" for s in snames(pn)],
+                           "parameters"=>["J:$(rem_tag(t))" for t in tnames(pn)])
+  end
+  g
 end
 
 """ gromet2petrinet(gromet)
@@ -415,15 +428,34 @@ function semagram2bln(sg)
 
 end
 
-function gromet2bln(model::String)
+function gromet2bln(model)
   semagram2bln(GrometInterop.gromet2semagram(model))
 end
 
-function bln2pnc(bln::String, name::String)
+function bln2pnc(bln::Dict, name::String; metadata=false)
+  local md
+  if metadata
+    md = bln["metadata"][1]
+  end
   model = GrometInterop.gromet2bln(bln)
   lpn = LabelledPetriNet()
   migrate!(lpn, model)
-  petrinet2gromet(lpn, name)
+  png = petrinet2gromet(lpn, name)
+  if metadata
+    # Assumes that variable UIDs are given as J:state_name
+    md["variables"] = filter(x->(x[3:end] ∈ String.(vcat(snames(lpn), tnames(lpn)))),
+                             md["variables"])
+    md["parameters"] = filter(x->(x[3:end] ∈ String.(vcat(snames(lpn), tnames(lpn)))),
+                             md["parameters"])
+    md["initial_conditions"] = filter(x->(x[3:end] ∈ String.(vcat(snames(lpn), tnames(lpn)))),
+                             md["initial_conditions"])
+    png["metadata"] = [md]
+  end
+  png
+end
+
+function bln2pnc(bln::String, name::String; metadata=false)
+  bln2pnc(parsefile(bln), name::String; metadata=metadata)
 end
 
 function test()
