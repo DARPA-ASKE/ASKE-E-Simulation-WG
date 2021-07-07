@@ -10,7 +10,7 @@ using LabelledArrays
 using DifferentialEquations
 using AlgebraicPetri
 using AlgebraicPetri.BilayerNetworks
-using Dates: now, UTC
+using Dates: now, UTC, format
 import Base.parse
 
 # Parse wrapper for Real and Number
@@ -349,7 +349,7 @@ function petrinet2gromet(pn::AbstractPetriNet, name::String; metadata=false)
                          "provenance"=>
                            Dict("metadata_type"=>"Provenance",
                                 "method"=>"FromPNC_baas@gt",
-                                "timestamp"=>now(UTC)),
+                                "timestamp"=>format(now(UTC), "yyyy-mm-ddTHH:MM:SSssss")*"_UTC-0000"),
                            "variables"=>["J:$(rem_tag(s))" for s in vcat(snames(pn), tnames(pn))],
                            "initial_conditions"=>["J:$(rem_tag(s))" for s in snames(pn)],
                            "parameters"=>["J:$(rem_tag(t))" for t in tnames(pn)])
