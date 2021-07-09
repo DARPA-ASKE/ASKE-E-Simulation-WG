@@ -484,7 +484,7 @@ a results json file.
 """
 function run_sim(pn::LabelledReactionNet{R,C},
   conc_params::Dict{Symbol, C}, rate_params::Dict{Symbol, <:Union{R, Function}},
-  t_range::Tuple{<:Real,<:Real}, tsteps::Array{<:Real,1}) where {R,C}
+  t_range::Tuple{<:Float64,<:Float64}, tsteps::Array{<:Float64,1}) where {R,C}
   sim = vectorfield(pn)
 
   #=
@@ -523,7 +523,7 @@ function run_sim(pn::LabelledReactionNet{R,C},
 end
 
 function run_sim(pn::LabelledReactionNet{R,C}, parameters,
-                 start::Number, stop::Number, step::Number) where {R,C}
+                 start::Float64, stop::Float64, step::Float64) where {R,C}
   rates = Dict{Symbol, R}()
   concs = Dict{Symbol, C}()
 
@@ -540,7 +540,10 @@ function run_sim(pn::LabelledReactionNet{R,C}, parameters,
 end
 
 function run_sim(gromet::Dict, p::Dict)
-  run_sim(gromet2petrinet(gromet), p["parameters"], p["start"], p["stop"], p["step"])
+  start = convert(Float64, p["start"])
+  stop = convert(Float64, p["stop"])
+  step = convert(Float64, p["step"])
+  run_sim(gromet2petrinet(gromet), p["parameters"], start, stop, step)
 end
 
 """ run_sim(gfile, param_file)
