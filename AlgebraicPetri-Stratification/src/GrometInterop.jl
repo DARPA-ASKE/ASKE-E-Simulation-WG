@@ -344,7 +344,7 @@ end
 function petrinet2gromet(pn::AbstractPetriNet, name::String; metadata=false)
   g = semagram2gromet(petrinet2semagram(pn, name), "PetriNetClassic", name)
   if metadata
-    g["metadata"] = Dict("metadata_type"=>"ModelInterface",
+    g["metadata"] = [Dict("metadata_type"=>"ModelInterface",
                          "uid"=>"$(name)_PNC_model_interface",
                          "provenance"=>
                            Dict("metadata_type"=>"Provenance",
@@ -352,7 +352,7 @@ function petrinet2gromet(pn::AbstractPetriNet, name::String; metadata=false)
                                 "timestamp"=>format(now(UTC), "yyyy-mm-ddTHH:MM:SSssss")*"_UTC-0000"),
                            "variables"=>["J:$(rem_tag(s))" for s in vcat(snames(pn), tnames(pn))],
                            "initial_conditions"=>["J:$(rem_tag(s))" for s in snames(pn)],
-                           "parameters"=>["J:$(rem_tag(t))" for t in tnames(pn)])
+                           "parameters"=>["J:$(rem_tag(t))" for t in tnames(pn)])]
   end
   g
 end

@@ -1,7 +1,7 @@
 {
   "junctions": [
     {
-      "value_type": "Integer",
+      "value_type": "Float",
       "name": "S",
       "uid": "J:S",
       "metadata": null,
@@ -10,7 +10,7 @@
       "syntax": "Junction"
     },
     {
-      "value_type": "Integer",
+      "value_type": "Float",
       "name": "E",
       "uid": "J:E",
       "metadata": null,
@@ -19,7 +19,7 @@
       "syntax": "Junction"
     },
     {
-      "value_type": "Integer",
+      "value_type": "Float",
       "name": "I",
       "uid": "J:I",
       "metadata": null,
@@ -28,7 +28,7 @@
       "syntax": "Junction"
     },
     {
-      "value_type": "Integer",
+      "value_type": "Float",
       "name": "R",
       "uid": "J:R",
       "metadata": null,
