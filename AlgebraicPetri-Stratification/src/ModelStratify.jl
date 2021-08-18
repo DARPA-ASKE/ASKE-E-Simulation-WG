@@ -4,7 +4,6 @@ module ModelStratify
 export dem_strat, diff_strat, diff_petri, dem_petri, stratify,
        serialize, deserialize, save_petri, save_json, save_model,
        ScaleGraph
-
 using AlgebraicPetri
 
 using JSON
@@ -23,10 +22,34 @@ using Catlab.Graphics.GraphvizGraphs
 import Base.convert
 Base.convert(::Type{Symbol}, str::String) = Symbol(str)
 
+function Base.setindex!(pn::LabelledReactionNet, val, label)
+  if label ∈ tnames(pn)
+    pn[first(incident(pn, label, :tname)), :rate] = val
+  elseif label ∈ snames(pn)
+    pn[first(incident(pn, label, :sname)), :concentration] = val
+  else
+    error("$label is not a valid state or transition name")
+  end
+end
+function Base.getindex(pn::LabelledReactionNet, label)
+  if label ∈ tnames(pn)
+    pn[first(incident(pn, label, :tname)), :rate]
+  elseif label ∈ snames(pn)
+    pn[first(incident(pn, label, :sname)), :concentration]
+  else
+    error("$label is not a valid state or transition name")
+  end
+end
+Base.setindex!(pn::LabelledReactionNet, val, label::Symbol, city) =
+  setindex!(pn, val, Symbol(label, "@", city))
+
+Base.getindex(pn::LabelledReactionNet, label::Symbol, city) =
+  getindex(pn, Symbol(label, "@", city))
+
+
 # Define helper functions for defining the two types of
 # reactions in an epidemiology Model. Either a state
 # spontaneously changes, or one state causes another to change
-
 
 ##################
 # Weighted Graph #
@@ -34,9 +57,11 @@ Base.convert(::Type{Symbol}, str::String) = Symbol(str)
 
 @present TheoryScaleGraph <: TheoryGraph begin
   Scale::Data
+  Label::Data
   edge_scale::Attr(E, Scale)
   conc_scale::Attr(V, Scale)
   rate_scale::Attr(V, Scale)
+  node_label::Attr(V, Label)
 end
 
 const AbstractScaleGraph = AbstractACSetType(TheoryScaleGraph)
@@ -45,9 +70,10 @@ const ScaleGraph = ACSetType(TheoryScaleGraph, index=[:src,:tgt])
 rscale(s::ScaleGraph, i::Int) = s[i, :rate_scale]
 cscale(s::ScaleGraph, i::Int) = s[i, :conc_scale]
 escale(s::ScaleGraph, i::Int) = s[i, :edge_scale]
+label(s::ScaleGraph, i::Int) = s[i, :node_label]
 
 
-matching_states(pattern, states) = collect(filter(s->(string(pattern)==first(split(string(s), "_"))), states))
+matching_states(pattern, states) = collect(filter(s->(string(pattern)==first(split(string(s), "@"))), states))
 
 (+)(a::LabelledPetriNet, b::LabelledPetriNet) = begin
   result = copy(a)
@@ -125,14 +151,14 @@ function index_petri(model::LabelledPetriNet, ind::Int)
   snames = subpart(model, :sname)
   tnames = subpart(model, :tname)
 
-  set_subpart!(new_petri, :sname, [Symbol("$(name)_$ind") for name in snames])
-  set_subpart!(new_petri, :tname, [Symbol("$(name)_$ind") for name in tnames])
+  set_subpart!(new_petri, :sname, [Symbol("$(name)@$ind") for name in snames])
+  set_subpart!(new_petri, :tname, [Symbol("$(name)@$ind") for name in tnames])
   Open(new_petri, subpart(new_petri, :sname))
 end
 
 # Creates a copy of a petrinet with indices added to the names to create
 # uniquely named states
-function index_petri(model::LabelledReactionNet, ind::Int, rscale::Number, cscale::Number; scaled_transitions::Union{Nothing, Array{Symbol}}=nothing)
+function index_petri(model::LabelledReactionNet, ind, rscale::Number, cscale::Number; scaled_transitions::Union{Nothing, Array{Symbol}}=nothing)
   new_petri = copy(model)
   snames = subpart(model, :sname)
   tnames = subpart(model, :tname)
@@ -141,8 +167,8 @@ function index_petri(model::LabelledReactionNet, ind::Int, rscale::Number, cscal
               new_petri[i, :tname] ∈ scaled_transitions) ? rscale : 1
               for i in 1:nparts(new_petri, :T)]
 
-  set_subpart!(new_petri, :sname, [Symbol("$(name)_$ind") for name in snames])
-  set_subpart!(new_petri, :tname, [Symbol("$(name)_$ind") for name in tnames])
+  set_subpart!(new_petri, :sname, [Symbol("$(name)@$ind") for name in snames])
+  set_subpart!(new_petri, :tname, [Symbol("$(name)@$ind") for name in tnames])
 
   set_subpart!(new_petri, :rate, rscales.*subpart(new_petri, :rate))
   set_subpart!(new_petri, :concentration, cscale*subpart(new_petri, :concentration))
@@ -175,7 +201,7 @@ function diff_petri(model::LabelledReactionNet{R,C}, diff_states::Array{<:Pair{S
 end
 
 function diff_petri(model::LabelledPetriNet)
-  states = unique([Symbol(first(split("$name", '_'))) for name in subpart(model, :sname)])
+  states = unique([Symbol(first(split("$name", '@'))) for name in subpart(model, :sname)])
   diff_petri(model, collect(states))
 end
 
@@ -189,7 +215,7 @@ function dem_petri(model::LabelledPetriNet, sus_state::Symbol,
 
   # This assumes that the susceptible and corresponding exposed states
   # are identical after the first '_'
-  get_exp(sus) = Symbol(join(vcat("$(exp_state)′",split(string(sus), "_")[2:end]), '_'))
+  get_exp(sus) = Symbol(join(vcat("$(exp_state)′",split(string(sus), "@")[2:end]), '@'))
   inf1 = vcat([matching_states(inf, states1) for inf in inf_states]...)
 
   transitions = vcat([[Symbol("crx_$(sus)′_$(inf)")=>((Symbol("$(sus)′"), inf)=>(inf, get_exp(sus))) for sus in sus1] for inf in inf1]...)
@@ -198,27 +224,51 @@ function dem_petri(model::LabelledPetriNet, sus_state::Symbol,
                    transitions...)
 end
 
+function dem_petri(model::LabelledReactionNet{R,C}, transitions::Vector) where {R, C}
+  states1 = subpart(model, :sname)
+  concs = concentrations(model)
+  transitions = [(Symbol("crx_$(sus)′_$(inf)")=>rate)=>((Symbol(sus, "′"), inf)=>(Symbol(exp, "′"), inf))
+                 for (((sus, inf), exp), rate) in transitions]
+
+  states = vcat([state=>concs[state] for state in states1],
+                [Symbol("$(state)′")=>concs[state] for state in states1])
+  LabelledReactionNet{R, C}(states, transitions...)
+
+end
+
 function dem_petri(model::LabelledReactionNet{R,C}, sus_state::Symbol,
                                                exp_state::Symbol,
                                                inf_states::Array{<:Pair{Symbol, <:Number}}) where {R,C}
   states1 = subpart(model, :sname)
-  states2 = [Symbol("$(state)′") for state in states1]
   concs = concentrations(model)
 
   sus1 = matching_states(sus_state, states1)
 
   # This assumes that the susceptible and corresponding exposed states
   # are identical after the first '_'
-  get_exp(sus) = Symbol(join(vcat("$(exp_state)′",split(string(sus), "_")[2:end]), '_'))
+  get_exp(sus) = Symbol(join(vcat("$(exp_state)",split(string(sus), "@")[2:end]), '@'))
   inf1 = vcat([[(m_state, state[2]) for m_state in matching_states(state[1], states1)] for state in inf_states]...)
 
-  transitions = vcat([[(Symbol("crx_$(sus)′_$(inf[1])")=>inf[2],
-                        ((Symbol("$(sus)′"), inf[1])=>(inf[1], get_exp(sus))))
-                        for sus in sus1] for inf in inf1]...)
+  transitions = vcat([[((sus, inf[1])=>get_exp(sus))=>inf[2]
+                       for sus in sus1] for inf in inf1]...)
+  dem_petri(model, transitions)
+end
 
-  states = vcat([state=>concs[state] for state in states1],
-                [Symbol("$(state)′")=>concs[state] for state in states1])
-  LabelledReactionNet{R, C}(states, transitions...)
+function dem_petri(model::LabelledReactionNet{R,C}) where {R,C}
+  infection(t) = begin
+    inp, otp = (inputs(model, t), outputs(model, t))
+    (length(inp) == 2 && length(otp) == 2) || return nothing
+    inf_ind = findfirst(op -> op ∈ inp, otp)
+    inf = otp[inf_ind]
+    isnothing(inf) && return nothing
+    exp_ind = 3 - inf_ind
+    exp = otp[exp_ind]
+    sus = inp[3 - findfirst(ip -> ip == inf, inp)]
+    return ((sname(model, sus), sname(model, inf))=>sname(model, exp))=>rate(model, t)
+  end
+  transitions = infection.(1:nt(model))
+  filter!(x -> !isnothing(x), transitions)
+  dem_petri(model, transitions)
 end
 
 function stratify(model::LabelledPetriNet, connections::Tuple{LabelledPetriNet, Graph}...)
@@ -251,7 +301,7 @@ function stratify(model::LabelledReactionNet, connections::Tuple{LabelledReactio
     g = first(connections)[2]
     ep_map = Dict{Symbol, OpenLabelledReactionNet}(
                  [Symbol("ep$i") =>
-                     index_petri(model, i, rscale(g,i), cscale(g,i); scaled_transitions=scaled_transitions) for i in 1:nv(g)])
+                  index_petri(model, label(g,i), rscale(g,i), cscale(g,i); scaled_transitions=scaled_transitions) for i in 1:nv(g)])
 
     for conn in 1:length(connections)
       p = connections[conn][1]
@@ -326,6 +376,11 @@ function dem_strat(epi_model::LabelledReactionNet{R,C}, connection_graph::ScaleG
   stratify(epi_model, (dem_conn, connection_graph); kw...)
 end
 
+function dem_strat(epi_model::LabelledReactionNet{R,C}, connection_graph::ScaleGraph; kw...) where {R,C}
+  dem_conn = dem_petri(epi_model)
+  stratify(epi_model, (dem_conn, connection_graph); kw...)
+end
+
 """ Serialize an ACSet object to a JSON string
 """
 serialize(x::ACSet; io=stdout) = JSON.print(io, x.tables, 2)
@@ -372,7 +427,7 @@ save_graph(g, fname::AbstractString, format::AbstractString) =
 show_graph(sg::ScaleGraph) = begin
 	g = BasicGraphs.Graph()
 	copy_parts!(g, sg)
-	vprops(i) = Dict(:label=>"p: $(sg[i, :conc_scale])\n r: $(sg[i, :rate_scale])")
+  vprops(i) = Dict(:label=>"$(sg[i, :node_label])\n p: $(sg[i, :conc_scale])\n r: $(sg[i, :rate_scale])")
 	eprops(i) = Dict(:label=>"$(sg[i, :edge_scale])")
 	p = PropertyGraph{Any}(g, vprops, eprops; prog="dot",
 	                            graph=Dict(:rankdir => "LR"),
