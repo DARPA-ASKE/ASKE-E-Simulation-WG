@@ -7,6 +7,7 @@ using DifferentialEquations
 using PerceptualColourMaps
 using Colors
 using StatsBase
+using LabelledArrays
 using Base.Iterators: flatten
 using JSON
 
@@ -31,8 +32,9 @@ function final_metric(model, concs; t_range=(0.0,100.0))
   end
 end
 
-function int_metric(model, concs; t_range=(0,100.0))
-  prob = ODEProblem(vectorfield(model), concentrations(model), t_range, rates(model))
+function int_metric(model, concs; t_range=(0,100.0), kw...)
+  rs = rates(model)
+  prob = ODEProblem(vectorfield(model; kw...), concentrations(model), t_range, rs)
   metric(p) = begin
     prob = remake(prob; p=p)
     sol = solve(prob)
@@ -51,11 +53,21 @@ function f2range(v, clims, N)
     round(Int64, (N-1)*v + 1)
 end
 
-function GraphHeatmap(p::AbstractPetriNet, rates; clims=nothing)
+function to_position(val)
+  isnothing(val) && return ""
+  "$(val[1]),$(val[2])!"
+end
+
+function GraphHeatmap(p::AbstractPetriNet, rates; clims=nothing,positions=Dict(:T=>fill(nothing, nt(p)), :S=>fill(nothing, ns(p))))
+
   colors = string.(hex.(cmap("D01")))
   clims = isnothing(clims) ? (minimum(rates), maximum(rates)) : clims
-  statenodes = [Node("s$s", Attributes(:label=>"$(sname(p, s))",:shape=>"circle", :color=>"#6C9AC3")) for s in 1:ns(p)]
-  transnodes = [Node("t$k", Attributes(:label=>"$(tname(p, k))", :shape=>"square", :color=>"#$(colors[f2range(rates[tname(p,k)], clims, 256)][3:end])")) for k in 1:nt(p)]
+
+  statenodes = [Node("s$s", Attributes(:label=>"$(sname(p, s))",:shape=>"circle", :color=>"#6C9AC3",
+                                       :pos=>to_position(positions[:S][s]))) for s in 1:ns(p)]
+
+  transnodes = [Node("t$k", Attributes(:label=>"$(tname(p, k))", :shape=>"square", :color=>"#$(colors[f2range(rates[tname(p,k)], clims, 256)][3:end])",
+                                       :pos=>to_position(positions[:T][k]))) for k in 1:nt(p)]
 
   graph_attrs = Attributes(:rankdir=>"LR")
   node_attrs  = Attributes(:shape=>"plain", :style=>"filled", :color=>"white")
@@ -69,7 +81,10 @@ function GraphHeatmap(p::AbstractPetriNet, rates; clims=nothing)
   end |> flatten |> collect
 
   stmts = vcat(stmts, edges)
-  g = Graphviz.Digraph("G", stmts; graph_attrs=graph_attrs, node_attrs=node_attrs, edge_attrs=edge_attrs)
+  g = Graphviz.Graph(;name="G", stmts=stmts, directed=true,
+                     prog= all(isnothing.(vcat(positions[:T], positions[:S]))) ? "dot" : "fdp",
+                     graph_attrs=graph_attrs, node_attrs=node_attrs,
+                     edge_attrs=edge_attrs)
   return g
 end
 countmap_wrap(a) = isempty(a) ? Dict{Int, Int}() : countmap(a)

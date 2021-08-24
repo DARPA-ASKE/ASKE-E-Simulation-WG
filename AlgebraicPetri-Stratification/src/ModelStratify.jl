@@ -5,6 +5,7 @@ export dem_strat, diff_strat, diff_petri, dem_petri, stratify,
        serialize, deserialize, save_petri, save_json, save_model,
        ScaleGraph
 using AlgebraicPetri
+using Semagrams
 
 using JSON
 
@@ -18,7 +19,10 @@ using Catlab.Programs
 using Catlab.Graphics
 using Catlab.Graphics.Graphviz: run_graphviz
 using Catlab.Graphics.GraphvizGraphs
+using AlgebraicPetri: scale_locs
+import AlgebraicPetri: locations
 
+import Base.:+
 import Base.convert
 Base.convert(::Type{Symbol}, str::String) = Symbol(str)
 
@@ -72,6 +76,7 @@ cscale(s::ScaleGraph, i::Int) = s[i, :conc_scale]
 escale(s::ScaleGraph, i::Int) = s[i, :edge_scale]
 label(s::ScaleGraph, i::Int) = s[i, :node_label]
 
+labels(s::ScaleGraph) = s[:node_label]
 
 matching_states(pattern, states) = collect(filter(s->(string(pattern)==first(split(string(s), "@"))), states))
 
@@ -452,5 +457,61 @@ function save_model(model, fname::AbstractString)
     save_petri(model, fname, "svg");
 end
 
+@semagramschema ScaleGraphSchema(TheoryScaleGraph) begin
+  @box V Circle label=:node_label
+  @wire E(src,tgt)
+  @data Scale Numeric
+  @data Label Stringlike
+end;
+
+function locations(sg::ScaleGraph, lsd::LocatedSemagramData)
+  blocs = lsd.boxlocs
+  sclocs = scale_locs(collect(values(blocs)); scale = 1.0)
+  for (i,k) in enumerate(keys(blocs))
+    blocs[k] = sclocs[i]
+  end
+
+  boxes = sort(collect(lsd.sg.boxes); by=first)
+  v_boxes = filter(b -> b[2].ty == :V, boxes)
+
+  v_label2id = Dict(b[2].weights[:node_label]=>b[1] for b in v_boxes)
+
+  Dict(:V=>[blocs[v_label2id["$v"]] for v in labels(sg)])
+end
+
+function strat_location(strat_model, pn, sg, pnlocs, sglocs; scale = 1.5)
+
+	all_pnlocs = vcat(pnlocs[:T], pnlocs[:S])
+  w, h = (maximum(first.(all_pnlocs)) .- minimum(first.(all_pnlocs)) + 10.0,
+          maximum(last.(all_pnlocs)) .- minimum(last.(all_pnlocs)) + 10.0)
+
+  # Calculate scale for scaled-graph coordinates
+  sc_dists = [abs.(sglocs[:V][i] .- sglocs[:V][j]) ./ (w,h) for i in 1:length(sglocs[:V]), j in 1:length(sglocs[:V]) if i != j]
+  ratio = 1/minimum(maximum.(sc_dists)) * scale
+
+  offset_dists = map(p -> ratio .* p, sglocs[:V])
+
+  tname2loc = Dict("$t"=>pnlocs[:T][i] for (i,t) in enumerate(tnames(pn)))
+  sname2loc = Dict("$s"=>pnlocs[:S][i] for (i,s) in enumerate(snames(pn)))
+  vname2loc = Dict("$v"=>offset_dists[i] for (i,v) in enumerate(labels(sg)))
+
+  tlocs = map(tnames(strat_model)) do t
+    if length(split("$t", "@")) == 2
+			p, c = split("$t", "@")
+			tname2loc[p] .+ vname2loc[c]
+    else
+      nothing
+    end
+  end
+  slocs = map(snames(strat_model)) do s
+    if length(split("$s", "@")) == 2
+      p, c = split("$s", "@")
+      sname2loc[p] .+ vname2loc[c]
+    else
+      nothing
+    end
+  end
+  Dict(:T=>tlocs, :S=>slocs)
+end
 
 end
