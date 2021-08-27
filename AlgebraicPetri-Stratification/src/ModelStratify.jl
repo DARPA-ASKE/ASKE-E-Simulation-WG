@@ -62,19 +62,23 @@ Base.getindex(pn::LabelledReactionNet, label::Symbol, city) =
 @present TheoryScaleGraph <: TheoryGraph begin
   Scale::Data
   Label::Data
-  edge_scale::Attr(E, Scale)
-  conc_scale::Attr(V, Scale)
-  rate_scale::Attr(V, Scale)
+  crossexposure::Attr(E, Scale)
+  pop_frac::Attr(V, Scale)
+  exposure::Attr(V, Scale)
   node_label::Attr(V, Label)
 end
 
 const AbstractScaleGraph = AbstractACSetType(TheoryScaleGraph)
 const ScaleGraph = ACSetType(TheoryScaleGraph, index=[:src,:tgt])
 
-rscale(s::ScaleGraph, i::Int) = s[i, :rate_scale]
-cscale(s::ScaleGraph, i::Int) = s[i, :conc_scale]
-escale(s::ScaleGraph, i::Int) = s[i, :edge_scale]
+iscale(s::ScaleGraph, i::Int) = s[i, :exposure]
+cscale(s::ScaleGraph, i::Int) = s[i, :pop_frac]
+escale(s::ScaleGraph, i::Int) = s[i, :crossexposure]
 label(s::ScaleGraph, i::Int) = s[i, :node_label]
+infection_scale(s::ScaleGraph) =
+  1/sum(vcat([cscale(s, src(s, e))*cscale(s, tgt(s,e))*escale(s,e)
+               for e in 1:ne(s)],
+             [iscale(s,v) * cscale(s,v)^2 for v in 1:nv(s)]...))
 
 labels(s::ScaleGraph) = s[:node_label]
 
@@ -115,12 +119,13 @@ function connection(conn_petri::LabelledPetriNet, m1::LabelledPetriNet, m2::Labe
 end
 
 function connection(conn_petri::LabelledReactionNet, m1::LabelledReactionNet,
-                    m2::LabelledReactionNet, ind1, ind2, rate_fact)
+                    m2::LabelledReactionNet, ind1, ind2, rate_fact, cscale1, cscale2)
   new_conn = copy(conn_petri)
   set_subpart!(new_conn, :sname, vcat(subpart(m1, :sname), subpart(m2, :sname)))
   set_subpart!(new_conn, :concentration, vcat(subpart(m1, :concentration), subpart(m2, :concentration)))
   set_subpart!(new_conn, :tname, [Symbol("$(name)_$(ind1)_$(ind2)") for name in subpart(conn_petri, :tname)])
-  set_subpart!(new_conn, :rate, subpart(conn_petri,:rate)*rate_fact)
+
+  set_subpart!(new_conn, :rate, subpart(conn_petri,:rate) .* rate_fact)
   Open(new_conn, subpart(m1, :sname)[1:ns(m1)], subpart(m2, :sname)[1:ns(m2)])
 end
 
@@ -175,7 +180,7 @@ function index_petri(model::LabelledReactionNet, ind, rscale::Number, cscale::Nu
   set_subpart!(new_petri, :sname, [Symbol("$(name)@$ind") for name in snames])
   set_subpart!(new_petri, :tname, [Symbol("$(name)@$ind") for name in tnames])
 
-  set_subpart!(new_petri, :rate, rscales.*subpart(new_petri, :rate))
+  set_subpart!(new_petri, :rate, rscales .* subpart(new_petri, :rate))
   set_subpart!(new_petri, :concentration, cscale*subpart(new_petri, :concentration))
   Open(new_petri, subpart(new_petri, :sname))
 end
@@ -259,19 +264,22 @@ function dem_petri(model::LabelledReactionNet{R,C}, sus_state::Symbol,
   dem_petri(model, transitions)
 end
 
+infection(model, t) = begin
+  inp, otp = (inputs(model, t), outputs(model, t))
+  (length(inp) == 2 && length(otp) == 2) || return nothing
+  inf_ind = findfirst(op -> op ∈ inp, otp)
+  inf = otp[inf_ind]
+  isnothing(inf) && return nothing
+  exp_ind = 3 - inf_ind
+  exp = otp[exp_ind]
+  sus = inp[3 - findfirst(ip -> ip == inf, inp)]
+  return ((sname(model, sus), sname(model, inf))=>sname(model, exp))=>rate(model, t)
+end
+
+infections(model) = [infection(model, t) for t in 1:nt(model)]
+
 function dem_petri(model::LabelledReactionNet{R,C}) where {R,C}
-  infection(t) = begin
-    inp, otp = (inputs(model, t), outputs(model, t))
-    (length(inp) == 2 && length(otp) == 2) || return nothing
-    inf_ind = findfirst(op -> op ∈ inp, otp)
-    inf = otp[inf_ind]
-    isnothing(inf) && return nothing
-    exp_ind = 3 - inf_ind
-    exp = otp[exp_ind]
-    sus = inp[3 - findfirst(ip -> ip == inf, inp)]
-    return ((sname(model, sus), sname(model, inf))=>sname(model, exp))=>rate(model, t)
-  end
-  transitions = infection.(1:nt(model))
+  transitions = infections(model)
   filter!(x -> !isnothing(x), transitions)
   dem_petri(model, transitions)
 end
@@ -304,9 +312,12 @@ function stratify(model::LabelledReactionNet, connections::Tuple{LabelledReactio
 
     # Calls diffusion_petri for each edge as (src, tgt)
     g = first(connections)[2]
+    inf_scale = infection_scale(g)
+    scaled_transitions = tnames(model)[.!(isnothing.(infections(model)))]
     ep_map = Dict{Symbol, OpenLabelledReactionNet}(
                  [Symbol("ep$i") =>
-                  index_petri(model, label(g,i), rscale(g,i), cscale(g,i); scaled_transitions=scaled_transitions) for i in 1:nv(g)])
+                  index_petri(model, label(g,i), inf_scale * iscale(g,i), cscale(g,i);
+                              scaled_transitions=scaled_transitions) for i in 1:nv(g)])
 
     for conn in 1:length(connections)
       p = connections[conn][1]
@@ -317,7 +328,8 @@ function stratify(model::LabelledReactionNet, connections::Tuple{LabelledReactio
         ep_map[Symbol("cross_$(conn)_$(srcs[i])_$(tgts[i])")] =
               connection(p, apex(ep_map[Symbol("ep$(srcs[i])")]),
                             apex(ep_map[Symbol("ep$(tgts[i])")]),
-                            srcs[i], tgts[i], escale(g,i))
+                            srcs[i], tgts[i], inf_scale*escale(g,i),
+                            cscale(g, srcs[i]), cscale(g, tgts[i]))
       end
     end
 
@@ -432,8 +444,8 @@ save_graph(g, fname::AbstractString, format::AbstractString) =
 show_graph(sg::ScaleGraph) = begin
 	g = BasicGraphs.Graph()
 	copy_parts!(g, sg)
-  vprops(i) = Dict(:label=>"$(sg[i, :node_label])\n p: $(sg[i, :conc_scale])\n r: $(sg[i, :rate_scale])")
-	eprops(i) = Dict(:label=>"$(sg[i, :edge_scale])")
+  vprops(i) = Dict(:label=>"$(sg[i, :node_label])\n pop: $(sg[i, :pop_frac])\n exp: $(sg[i, :exposure])")
+	eprops(i) = Dict(:label=>"$(sg[i, :crossexposure])")
 	p = PropertyGraph{Any}(g, vprops, eprops; prog="dot",
 	                            graph=Dict(:rankdir => "LR"),
 	                            node = GraphvizGraphs.default_node_attrs(true),
